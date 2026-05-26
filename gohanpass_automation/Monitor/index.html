@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GO Hanpass QA Automation Monitor</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="dashboard">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">GO Hanpass QA Automation Monitor</p>
+          <h1>go.hanpass 자동화 데이터 요약</h1>
+        </div>
+        <div class="control-card">
+          <div class="control-meta">
+            <span id="sourceBadge" class="source">데이터 확인중</span>
+            <strong id="updatedAt">-</strong>
+          </div>
+          <button id="refreshBtn">배포 데이터 새로고침</button>
+        </div>
+      </section>
+
+      <section id="kpis" class="kpi-grid"></section>
+
+      <section class="summary-grid">
+        <article class="panel panel-main">
+          <div class="panel-title">
+            <span>1</span>
+            <div>
+              <h2>현재 상태</h2>
+            </div>
+          </div>
+          <div id="currentStatus"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-title">
+            <span>2</span>
+            <div>
+              <h2>최근 실패</h2>
+            </div>
+          </div>
+          <div id="recentFailures" class="stack-list"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-title">
+            <span>3</span>
+            <div>
+              <h2>반복 실패</h2>
+            </div>
+          </div>
+          <div id="repeatFailures" class="stack-list"></div>
+        </article>
+
+        <article class="panel snapshot-panel">
+          <div class="panel-title">
+            <span>4</span>
+            <div>
+              <h2>최신 스냅샷</h2>
+            </div>
+          </div>
+          <div id="latestSnapshot"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-title">
+            <span>5</span>
+            <div>
+              <h2>버전별 상태</h2>
+            </div>
+          </div>
+          <div id="versions" class="version-list"></div>
+        </article>
+      </section>
+
+      <section class="panel raw-panel">
+        <div class="panel-title">
+          <span>6</span>
+          <div>
+            <h2>실행 기록</h2>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>등록일</th>
+                <th>버전</th>
+                <th>상태</th>
+                <th>PASS</th>
+                <th>FAIL</th>
+                <th>Total</th>
+                <th>제목</th>
+              </tr>
+            </thead>
+            <tbody id="runRows"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>
