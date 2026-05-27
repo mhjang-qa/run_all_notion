@@ -82,6 +82,27 @@ def run_git(args: list[str], cwd: Path, check: bool = True) -> subprocess.Comple
     return run_command(["git", *args], cwd=cwd, check=check)
 
 
+def ensure_git_branch(repo_dir: Path, branch: str = DEFAULT_BRANCH) -> None:
+    run_git(["config", "user.name", "Notion Dashboard Bot"], cwd=repo_dir)
+    run_git(["config", "user.email", "notion-dashboard@users.noreply.github.com"], cwd=repo_dir)
+    run_git(["fetch", "origin"], cwd=repo_dir, check=False)
+
+    local_branch = run_git(["rev-parse", "--verify", branch], cwd=repo_dir, check=False)
+    remote_branch = run_git(["rev-parse", "--verify", f"origin/{branch}"], cwd=repo_dir, check=False)
+    current_branch = run_git(["rev-parse", "--abbrev-ref", "HEAD"], cwd=repo_dir, check=False)
+
+    if local_branch.returncode == 0:
+        if current_branch.stdout.strip() != branch:
+            run_git(["checkout", branch], cwd=repo_dir)
+    elif remote_branch.returncode == 0:
+        run_git(["checkout", "-B", branch, f"origin/{branch}"], cwd=repo_dir)
+    else:
+        run_git(["checkout", "-B", branch], cwd=repo_dir)
+
+    if remote_branch.returncode == 0:
+        run_git(["pull", "--ff-only", "origin", branch], cwd=repo_dir, check=False)
+
+
 def ensure_git_repo(repo_url: str, publish_dir: Path, branch: str = DEFAULT_BRANCH) -> None:
     publish_dir.parent.mkdir(parents=True, exist_ok=True)
     if not (publish_dir / ".git").exists():
@@ -89,17 +110,11 @@ def ensure_git_repo(repo_url: str, publish_dir: Path, branch: str = DEFAULT_BRAN
             raise StepError(f"{publish_dir} exists but is not an empty git repository.")
         run_git(["clone", repo_url, str(publish_dir)], cwd=publish_dir.parent)
 
-    run_git(["config", "user.name", "Notion Dashboard Bot"], cwd=publish_dir)
-    run_git(["config", "user.email", "notion-dashboard@users.noreply.github.com"], cwd=publish_dir)
-    branch_check = run_git(["rev-parse", "--verify", branch], cwd=publish_dir, check=False)
-    if branch_check.returncode == 0:
-        run_git(["checkout", branch], cwd=publish_dir)
-        run_git(["pull", "--ff-only", "origin", branch], cwd=publish_dir, check=False)
-    else:
-        run_git(["checkout", "-B", branch], cwd=publish_dir)
+    ensure_git_branch(publish_dir, branch)
 
 
 def commit_and_push(repo_dir: Path, message: str, branch: str = DEFAULT_BRANCH) -> bool:
+    ensure_git_branch(repo_dir, branch)
     run_git(["add", "-A"], cwd=repo_dir)
     diff = run_git(["diff", "--cached", "--quiet"], cwd=repo_dir, check=False)
     if diff.returncode == 0:
