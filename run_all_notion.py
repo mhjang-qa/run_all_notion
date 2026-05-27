@@ -187,6 +187,9 @@ def generate_hqi(force: bool, publish: bool) -> dict[str, Any]:
     if not (HQI_DIR / "app.py").exists():
         return {"skipped": True, "reason": "HQI/app.py not found"}
 
+    if publish and (HQI_DIR / ".git").exists():
+        ensure_git_branch(HQI_DIR)
+
     module = load_module("hqi_app_runner", HQI_DIR / "app.py")
     result = module.calculate_and_store_all_projects(force=force)
     payload = module.get_saved_hqi()
