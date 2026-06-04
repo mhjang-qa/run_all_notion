@@ -337,6 +337,34 @@
       return "gray";
     }
 
+    function normalizeDateInput(value) {
+      const text = String(value ?? "").trim();
+      if (!text) return "";
+      if (/[zZ]$|[+-]\d{2}:\d{2}$/.test(text)) return text;
+      if (/^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?$/.test(text)) {
+        return `${text.replace(" ", "T")}+09:00`;
+      }
+      return text;
+    }
+
+    function formatKstDateTime(value) {
+      if (!value) return "-";
+      const date = new Date(normalizeDateInput(value));
+      if (Number.isNaN(date.getTime())) return String(value).replace("T", " ");
+      const parts = new Intl.DateTimeFormat("sv-SE", {
+        timeZone: "Asia/Seoul",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      }).formatToParts(date);
+      const lookup = Object.fromEntries(parts.filter((part) => part.type !== "literal").map((part) => [part.type, part.value]));
+      return `${lookup.year}-${lookup.month}-${lookup.day} ${lookup.hour}:${lookup.minute}:${lookup.second}`;
+    }
+
     function renderHeatmap(data) {
       const heatmap = document.getElementById("heatmap");
       heatmap.innerHTML = "";
@@ -370,8 +398,7 @@
         heatmap.appendChild(tile);
       });
 
-      document.getElementById("updatedAt").innerText =
-        new Date().toLocaleString("ko-KR");
+      document.getElementById("updatedAt").innerText = formatKstDateTime(DATA.generatedAt);
     }
 
     renderHeatmap(qaData);

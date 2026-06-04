@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import Counter, defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 
 
@@ -24,7 +24,7 @@ def build_monitor_payload(runs: list[dict[str, Any]], source: str, error: str | 
     return {
         "source": source,
         "error": error,
-        "updatedAt": datetime.now().isoformat(timespec="seconds"),
+        "updatedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "kpi": {
             **totals,
             "failedRuns": len(failed_runs),

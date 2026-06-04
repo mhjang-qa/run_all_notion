@@ -2,10 +2,54 @@ const state = {
   timer: null,
 };
 
-const fmt = new Intl.DateTimeFormat("ko-KR", {
-  dateStyle: "short",
-  timeStyle: "medium",
-});
+const KST_TIME_ZONE = "Asia/Seoul";
+
+function normalizeDateInput(value) {
+  const text = String(value ?? "").trim();
+  if (!text) return "";
+  if (/[zZ]$|[+-]\d{2}:\d{2}$/.test(text)) return text;
+  if (/^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?$/.test(text)) {
+    return `${text.replace(" ", "T")}+09:00`;
+  }
+  return text;
+}
+
+function formatKstDateTime(value) {
+  if (!value) return "-";
+  const date = new Date(normalizeDateInput(value));
+  if (Number.isNaN(date.getTime())) return String(value).replace("T", " ");
+  const parts = new Intl.DateTimeFormat("sv-SE", {
+    timeZone: KST_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).formatToParts(date);
+  const lookup = Object.fromEntries(parts.filter((part) => part.type !== "literal").map((part) => [part.type, part.value]));
+  return `${lookup.year}-${lookup.month}-${lookup.day} ${lookup.hour}:${lookup.minute}:${lookup.second}`;
+}
+
+function formatRelativeTime(value) {
+  if (!value) return "";
+  const date = new Date(normalizeDateInput(value));
+  if (Number.isNaN(date.getTime())) return "";
+  const diffMs = date.getTime() - Date.now();
+  const absMs = Math.abs(diffMs);
+  const suffix = diffMs <= 0 ? "전" : "후";
+  if (absMs < 60 * 1000) return "방금 전";
+  if (absMs < 60 * 60 * 1000) return `${Math.round(absMs / (60 * 1000))}분 ${suffix}`;
+  if (absMs < 24 * 60 * 60 * 1000) return `${Math.round(absMs / (60 * 60 * 1000))}시간 ${suffix}`;
+  return `${Math.round(absMs / (24 * 60 * 60 * 1000))}일 ${suffix}`;
+}
+
+function formatKstDateTimeWithRelative(value) {
+  const formatted = formatKstDateTime(value);
+  const relative = formatRelativeTime(value);
+  return relative ? `${formatted} (${relative})` : formatted;
+}
 
 async function api(path) {
   const response = await fetch(path, { cache: "no-store" });
@@ -13,6 +57,11 @@ async function api(path) {
     throw new Error(await response.text());
   }
   return response.json();
+}
+
+function withCacheBust(path) {
+  const divider = path.includes("?") ? "&" : "?";
+  return `${path}${divider}ts=${Date.now()}`;
 }
 
 function escapeHtml(value) {
@@ -24,9 +73,7 @@ function escapeHtml(value) {
 }
 
 function dateText(value) {
-  if (!value) return "-";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : fmt.format(date);
+  return formatKstDateTime(value);
 }
 
 function renderKpis(kpi, source) {
@@ -189,11 +236,11 @@ function renderRows(runs) {
 }
 
 async function refresh(force = false) {
-  const data = await api(`./monitor-data.json${force ? `?ts=${Date.now()}` : ""}`);
+  const data = await api(withCacheBust("./monitor-data.json"));
   const badge = document.querySelector("#sourceBadge");
   badge.textContent = data.source === "notion" ? "Notion Snapshot" : "샘플 데이터";
   badge.classList.toggle("sample", data.source !== "notion");
-  document.querySelector("#updatedAt").textContent = dateText(data.updatedAt);
+  document.querySelector("#updatedAt").textContent = formatKstDateTimeWithRelative(data.updatedAt);
   if (data.error) {
     badge.title = data.error;
   }

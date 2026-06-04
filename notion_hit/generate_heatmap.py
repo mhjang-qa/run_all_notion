@@ -210,7 +210,7 @@ def make_summary(rows):
 
 
 def build_html(rows):
-    generated_at = datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M:%S")
+    generated_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
     data_json = json.dumps(
         {"generatedAt": generated_at, "rows": rows, "summary": make_summary(rows)},
         ensure_ascii=False,
@@ -1623,7 +1623,35 @@ def build_html(rows):
         openIssueList("미완료 결함 리스트", filtered.filter(row => !isDone(row) && !isFutureFix(row)), "Done/QA검증/결함아님/추후수정 제외");
       document.querySelector(".card.future").onclick = () =>
         openIssueList("추후 수정 결함 리스트", filtered.filter(isFutureFix), "추후 수정 백로그 이관");
-      document.getElementById("updatedAt").textContent = DATA.generatedAt;
+      const normalizeDateInput = (value) => {{
+        const text = String(value ?? "").trim();
+        if (!text) return "";
+        if (/[zZ]$|[+-]\\d{{2}}:\\d{{2}}$/.test(text)) return text;
+        if (/^\\d{{4}}-\\d{{2}}-\\d{{2}}[T ]\\d{{2}}:\\d{{2}}:\\d{{2}}(?:\\.\\d+)?$/.test(text)) {{
+          return `${{text.replace(" ", "T")}}+09:00`;
+        }}
+        return text;
+      }};
+
+      const formatKstDateTime = (value) => {{
+        if (!value) return "-";
+        const date = new Date(normalizeDateInput(value));
+        if (Number.isNaN(date.getTime())) return String(value).replace("T", " ");
+        const parts = new Intl.DateTimeFormat("sv-SE", {{
+          timeZone: "Asia/Seoul",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        }}).formatToParts(date);
+        const lookup = Object.fromEntries(parts.filter((part) => part.type !== "literal").map((part) => [part.type, part.value]));
+        return `${{lookup.year}}-${{lookup.month}}-${{lookup.day}} ${{lookup.hour}}:${{lookup.minute}}:${{lookup.second}}`;
+      }};
+
+      document.getElementById("updatedAt").textContent = formatKstDateTime(DATA.generatedAt);
     }}
 
     render();
