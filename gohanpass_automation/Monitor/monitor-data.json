@@ -1,27 +1,72 @@
 {
   "source": "notion",
   "error": null,
-  "updatedAt": "2026-05-26T13:57:15",
+  "updatedAt": "2026-06-11T05:15:59+00:00",
   "kpi": {
-    "runs": 30,
-    "pass": 456,
-    "fail": 136,
-    "na": 30,
-    "total": 622,
-    "passRate": 73.3,
-    "failRate": 21.9,
-    "failedRuns": 18,
-    "latestStatus": "failed",
+    "runs": 40,
+    "pass": 694,
+    "fail": 273,
+    "na": 115,
+    "total": 1082,
+    "passRate": 64.1,
+    "failRate": 25.2,
+    "failedRuns": 23,
+    "latestStatus": "passed",
     "latestVersion": "1.0.0"
   },
   "current": {
-    "mode": "attention",
-    "title": "GO Hanpass 웹 자동리포트_20260526T084546",
+    "mode": "idle",
+    "title": "GO Hanpass 자동화 테스트 결과",
     "message": "가장 최근 go.hanpass 자동화 실행 결과입니다.",
     "version": "1.0.0",
-    "startedAt": "2026-05-26T00:03:00.000Z"
+    "startedAt": "2026-06-05T00:09:00.000Z"
   },
   "recentFailures": [
+    {
+      "title": "GO Hanpass 자동화 테스트 결과",
+      "version": "1.0.0",
+      "createdAt": "2026-06-04T05:49:00.000Z",
+      "scenario": "Run",
+      "name": "FAIL 집계",
+      "status": "FAIL 26",
+      "url": "https://app.notion.com/p/GO-Hanpass-37573fbd1951814f9649d14c8c72b181"
+    },
+    {
+      "title": "GO Hanpass 자동화 테스트 결과",
+      "version": "1.0.0",
+      "createdAt": "2026-06-03T02:49:00.000Z",
+      "scenario": "Run",
+      "name": "FAIL 집계",
+      "status": "FAIL 26",
+      "url": "https://app.notion.com/p/GO-Hanpass-37473fbd195181159942c641bb11eee6"
+    },
+    {
+      "title": "GO Hanpass 웹 자동리포트_20260602T090546",
+      "version": "1.0.0",
+      "createdAt": "2026-06-02T00:56:00.000Z",
+      "scenario": "Run",
+      "name": "FAIL 집계",
+      "status": "FAIL 60",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260602T090546-37373fbd195181a3a3cef23c50b864c9"
+    },
+    {
+      "title": "GO Hanpass 웹 자동리포트_20260526T145830",
+      "version": "1.0.0",
+      "createdAt": "2026-05-26T06:21:00.000Z",
+      "scenario": "Run",
+      "name": "FAIL 집계",
+      "status": "FAIL 15",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260526T145830-36c73fbd195181ca9565d5576bc86418"
+    },
+    {
+      "title": "GO Hanpass 웹 자동리포트_20260526T141812",
+      "version": "1.0.0",
+      "createdAt": "2026-05-26T05:37:00.000Z",
+      "scenario": "Run",
+      "name": "FAIL 집계",
+      "status": "FAIL 10",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260526T141812-36c73fbd195181a7bc5cef4e77ed5a2a"
+    },
     {
       "title": "GO Hanpass 웹 자동리포트_20260526T084546",
       "version": "1.0.0",
@@ -29,7 +74,7 @@
       "scenario": "Run",
       "name": "FAIL 집계",
       "status": "FAIL 14",
-      "url": "https://www.notion.so/GO-Hanpass-_20260526T084546-36c73fbd19518193a543f4937b9ae6b1"
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260526T084546-36c73fbd19518193a543f4937b9ae6b1"
     },
     {
       "title": "GO Hanpass 웹 자동리포트_20260522T144518",
@@ -38,7 +83,7 @@
       "scenario": "Run",
       "name": "FAIL 집계",
       "status": "FAIL 2",
-      "url": "https://www.notion.so/GO-Hanpass-_20260522T144518-36873fbd195181dca41fcc43dd689c59"
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260522T144518-36873fbd195181dca41fcc43dd689c59"
     },
     {
       "title": "GO Hanpass 웹 자동리포트_20260522T104933",
@@ -47,52 +92,7 @@
       "scenario": "Run",
       "name": "FAIL 집계",
       "status": "FAIL 3",
-      "url": "https://www.notion.so/GO-Hanpass-_20260522T104933-36873fbd1951817383ebf0a7367969c6"
-    },
-    {
-      "title": "GO Hanpass 웹 자동리포트_20260522T090247",
-      "version": "1.0.0",
-      "createdAt": "2026-05-22T00:09:00.000Z",
-      "scenario": "Run",
-      "name": "FAIL 집계",
-      "status": "FAIL 21",
-      "url": "https://www.notion.so/GO-Hanpass-_20260522T090247-36873fbd1951812c98b8ce09b4bd92db"
-    },
-    {
-      "title": "GO Hanpass 웹 자동리포트_20260521T171203",
-      "version": "1.0.0",
-      "createdAt": "2026-05-21T08:17:00.000Z",
-      "scenario": "Run",
-      "name": "FAIL 집계",
-      "status": "FAIL 20",
-      "url": "https://www.notion.so/GO-Hanpass-_20260521T171203-36773fbd195181968396fbadd3873d71"
-    },
-    {
-      "title": "GO Hanpass 웹 자동리포트_20260521T170252",
-      "version": "1.0.0",
-      "createdAt": "2026-05-21T08:03:00.000Z",
-      "scenario": "Run",
-      "name": "FAIL 집계",
-      "status": "FAIL 1",
-      "url": "https://www.notion.so/GO-Hanpass-_20260521T170252-36773fbd19518106b7e6d65df143c858"
-    },
-    {
-      "title": "GO Hanpass 웹 자동리포트_20260521T164311",
-      "version": "1.0.0",
-      "createdAt": "2026-05-21T07:47:00.000Z",
-      "scenario": "Run",
-      "name": "FAIL 집계",
-      "status": "FAIL 16",
-      "url": "https://www.notion.so/GO-Hanpass-_20260521T164311-36773fbd1951817fae0cefbdc7186792"
-    },
-    {
-      "title": "GO Hanpass 웹 자동리포트_20260521T160256",
-      "version": "1.0.0",
-      "createdAt": "2026-05-21T07:08:00.000Z",
-      "scenario": "Run",
-      "name": "FAIL 집계",
-      "status": "FAIL 16",
-      "url": "https://www.notion.so/GO-Hanpass-_20260521T160256-36773fbd195181d5a07dd2ffaaaaee96"
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260522T104933-36873fbd1951817383ebf0a7367969c6"
     }
   ],
   "repeatFailures": [],
@@ -100,17 +100,197 @@
   "versions": [
     {
       "version": "1.0.0",
-      "runs": 30,
-      "passRate": 73.3,
-      "failed": 136,
+      "runs": 40,
+      "passRate": 64.1,
+      "failed": 273,
       "status": "failed",
-      "latestAt": "2026-05-26T00:03:00.000Z"
+      "latestAt": "2026-06-05T00:09:00.000Z"
     }
   ],
   "runs": [
     {
+      "id": "37673fbd-1951-8108-b3f8-d9562a566176",
+      "url": "https://app.notion.com/p/GO-Hanpass-37673fbd19518108b3f8d9562a566176",
+      "title": "GO Hanpass 자동화 테스트 결과",
+      "version": "1.0.0",
+      "platform": "Web",
+      "status": "passed",
+      "statusText": "완료",
+      "pass": 25,
+      "fail": 0,
+      "na": 10,
+      "total": 35,
+      "resultText": "성공 | PASS 25 / FAIL 0 / N/A 10 / ERROR 0 / Total 35",
+      "failedItems": [],
+      "snapshots": [],
+      "createdAt": "2026-06-05T00:09:00.000Z",
+      "lastEditedAt": "2026-06-05T00:09:00.000Z"
+    },
+    {
+      "id": "37573fbd-1951-8175-bc55-f25d362a7a48",
+      "url": "https://app.notion.com/p/GO-Hanpass-37573fbd19518175bc55f25d362a7a48",
+      "title": "GO Hanpass 자동화 테스트 결과",
+      "version": "1.0.0",
+      "platform": "Web",
+      "status": "passed",
+      "statusText": "완료",
+      "pass": 4,
+      "fail": 0,
+      "na": 0,
+      "total": 4,
+      "resultText": "성공 | PASS 4 / FAIL 0 / N/A 0 / ERROR 0 / Total 4",
+      "failedItems": [],
+      "snapshots": [],
+      "createdAt": "2026-06-04T06:50:00.000Z",
+      "lastEditedAt": "2026-06-04T06:50:00.000Z"
+    },
+    {
+      "id": "37573fbd-1951-814f-9649-d14c8c72b181",
+      "url": "https://app.notion.com/p/GO-Hanpass-37573fbd1951814f9649d14c8c72b181",
+      "title": "GO Hanpass 자동화 테스트 결과",
+      "version": "1.0.0",
+      "platform": "Web",
+      "status": "failed",
+      "statusText": "완료",
+      "pass": 5,
+      "fail": 26,
+      "na": 12,
+      "total": 43,
+      "resultText": "실패 | PASS 5 / FAIL 26 / N/A 12 / ERROR 0 / Total 43",
+      "failedItems": [],
+      "snapshots": [],
+      "createdAt": "2026-06-04T05:49:00.000Z",
+      "lastEditedAt": "2026-06-04T05:49:00.000Z"
+    },
+    {
+      "id": "37473fbd-1951-812c-9c1c-ca3d86fb0542",
+      "url": "https://app.notion.com/p/GO-Hanpass-37473fbd1951812c9c1cca3d86fb0542",
+      "title": "GO Hanpass 자동화 테스트 결과",
+      "version": "1.0.0",
+      "platform": "Web",
+      "status": "passed",
+      "statusText": "완료",
+      "pass": 4,
+      "fail": 0,
+      "na": 0,
+      "total": 4,
+      "resultText": "성공 | PASS 4 / FAIL 0 / N/A 0 / ERROR 0 / Total 4",
+      "failedItems": [],
+      "snapshots": [],
+      "createdAt": "2026-06-03T03:18:00.000Z",
+      "lastEditedAt": "2026-06-03T03:18:00.000Z"
+    },
+    {
+      "id": "37473fbd-1951-8115-9942-c641bb11eee6",
+      "url": "https://app.notion.com/p/GO-Hanpass-37473fbd195181159942c641bb11eee6",
+      "title": "GO Hanpass 자동화 테스트 결과",
+      "version": "1.0.0",
+      "platform": "Web",
+      "status": "failed",
+      "statusText": "완료",
+      "pass": 5,
+      "fail": 26,
+      "na": 12,
+      "total": 43,
+      "resultText": "실패 | PASS 5 / FAIL 26 / N/A 12 / ERROR 0 / Total 43",
+      "failedItems": [],
+      "snapshots": [],
+      "createdAt": "2026-06-03T02:49:00.000Z",
+      "lastEditedAt": "2026-06-03T02:49:00.000Z"
+    },
+    {
+      "id": "37373fbd-1951-8116-a3f9-ffe954856a4c",
+      "url": "https://app.notion.com/p/GO-Hanpass-37373fbd19518116a3f9ffe954856a4c",
+      "title": "GO Hanpass 자동화 테스트 결과",
+      "version": "1.0.0",
+      "platform": "Web",
+      "status": "passed",
+      "statusText": "완료",
+      "pass": 4,
+      "fail": 0,
+      "na": 0,
+      "total": 4,
+      "resultText": "성공 | PASS 4 / FAIL 0 / N/A 0 / ERROR 0 / Total 4",
+      "failedItems": [],
+      "snapshots": [],
+      "createdAt": "2026-06-02T09:05:00.000Z",
+      "lastEditedAt": "2026-06-02T09:05:00.000Z"
+    },
+    {
+      "id": "37373fbd-1951-8124-b093-f7d3c2642fcd",
+      "url": "https://app.notion.com/p/GO-Hanpass-37373fbd19518124b093f7d3c2642fcd",
+      "title": "GO Hanpass 자동화 테스트 결과",
+      "version": "1.0.0",
+      "platform": "Web",
+      "status": "passed",
+      "statusText": "완료",
+      "pass": 26,
+      "fail": 0,
+      "na": 9,
+      "total": 35,
+      "resultText": "성공 | PASS 26 / FAIL 0 / N/A 9 / ERROR 0 / Total 35",
+      "failedItems": [],
+      "snapshots": [],
+      "createdAt": "2026-06-02T02:30:00.000Z",
+      "lastEditedAt": "2026-06-02T02:30:00.000Z"
+    },
+    {
+      "id": "37373fbd-1951-81a3-a3ce-f23c50b864c9",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260602T090546-37373fbd195181a3a3cef23c50b864c9",
+      "title": "GO Hanpass 웹 자동리포트_20260602T090546",
+      "version": "1.0.0",
+      "platform": "Web",
+      "status": "failed",
+      "statusText": "완료",
+      "pass": 74,
+      "fail": 60,
+      "na": 20,
+      "total": 154,
+      "resultText": "실패 | PASS 74 / FAIL 60 / N/A 20 / ERROR 0 / Total 154",
+      "failedItems": [],
+      "snapshots": [],
+      "createdAt": "2026-06-02T00:56:00.000Z",
+      "lastEditedAt": "2026-06-02T00:57:00.000Z"
+    },
+    {
+      "id": "36c73fbd-1951-81ca-9565-d5576bc86418",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260526T145830-36c73fbd195181ca9565d5576bc86418",
+      "title": "GO Hanpass 웹 자동리포트_20260526T145830",
+      "version": "1.0.0",
+      "platform": "Web",
+      "status": "failed",
+      "statusText": "완료",
+      "pass": 31,
+      "fail": 15,
+      "na": 1,
+      "total": 47,
+      "resultText": "실패 | PASS 31 / FAIL 15 / N/A 1 / ERROR 0 / Total 47",
+      "failedItems": [],
+      "snapshots": [],
+      "createdAt": "2026-05-26T06:21:00.000Z",
+      "lastEditedAt": "2026-05-26T06:21:00.000Z"
+    },
+    {
+      "id": "36c73fbd-1951-81a7-bc5c-ef4e77ed5a2a",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260526T141812-36c73fbd195181a7bc5cef4e77ed5a2a",
+      "title": "GO Hanpass 웹 자동리포트_20260526T141812",
+      "version": "1.0.0",
+      "platform": "Web",
+      "status": "failed",
+      "statusText": "완료",
+      "pass": 60,
+      "fail": 10,
+      "na": 21,
+      "total": 91,
+      "resultText": "실패 | PASS 60 / FAIL 10 / N/A 21 / ERROR 0 / Total 91",
+      "failedItems": [],
+      "snapshots": [],
+      "createdAt": "2026-05-26T05:37:00.000Z",
+      "lastEditedAt": "2026-05-26T05:37:00.000Z"
+    },
+    {
       "id": "36c73fbd-1951-8193-a543-f4937b9ae6b1",
-      "url": "https://www.notion.so/GO-Hanpass-_20260526T084546-36c73fbd19518193a543f4937b9ae6b1",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260526T084546-36c73fbd19518193a543f4937b9ae6b1",
       "title": "GO Hanpass 웹 자동리포트_20260526T084546",
       "version": "1.0.0",
       "platform": "Web",
@@ -128,7 +308,7 @@
     },
     {
       "id": "36873fbd-1951-81dc-a41f-cc43dd689c59",
-      "url": "https://www.notion.so/GO-Hanpass-_20260522T144518-36873fbd195181dca41fcc43dd689c59",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260522T144518-36873fbd195181dca41fcc43dd689c59",
       "title": "GO Hanpass 웹 자동리포트_20260522T144518",
       "version": "1.0.0",
       "platform": "Web",
@@ -146,7 +326,7 @@
     },
     {
       "id": "36873fbd-1951-81b2-8140-f36d8f58524b",
-      "url": "https://www.notion.so/GO-Hanpass-_20260522T140433-36873fbd195181b28140f36d8f58524b",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260522T140433-36873fbd195181b28140f36d8f58524b",
       "title": "GO Hanpass 웹 자동리포트_20260522T140433",
       "version": "1.0.0",
       "platform": "Web",
@@ -164,7 +344,7 @@
     },
     {
       "id": "36873fbd-1951-8173-83eb-f0a7367969c6",
-      "url": "https://www.notion.so/GO-Hanpass-_20260522T104933-36873fbd1951817383ebf0a7367969c6",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260522T104933-36873fbd1951817383ebf0a7367969c6",
       "title": "GO Hanpass 웹 자동리포트_20260522T104933",
       "version": "1.0.0",
       "platform": "Web",
@@ -182,7 +362,7 @@
     },
     {
       "id": "36873fbd-1951-812c-98b8-ce09b4bd92db",
-      "url": "https://www.notion.so/GO-Hanpass-_20260522T090247-36873fbd1951812c98b8ce09b4bd92db",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260522T090247-36873fbd1951812c98b8ce09b4bd92db",
       "title": "GO Hanpass 웹 자동리포트_20260522T090247",
       "version": "1.0.0",
       "platform": "Web",
@@ -200,7 +380,7 @@
     },
     {
       "id": "36773fbd-1951-8196-8396-fbadd3873d71",
-      "url": "https://www.notion.so/GO-Hanpass-_20260521T171203-36773fbd195181968396fbadd3873d71",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260521T171203-36773fbd195181968396fbadd3873d71",
       "title": "GO Hanpass 웹 자동리포트_20260521T171203",
       "version": "1.0.0",
       "platform": "Web",
@@ -218,7 +398,7 @@
     },
     {
       "id": "36773fbd-1951-8106-b7e6-d65df143c858",
-      "url": "https://www.notion.so/GO-Hanpass-_20260521T170252-36773fbd19518106b7e6d65df143c858",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260521T170252-36773fbd19518106b7e6d65df143c858",
       "title": "GO Hanpass 웹 자동리포트_20260521T170252",
       "version": "1.0.0",
       "platform": "Web",
@@ -236,7 +416,7 @@
     },
     {
       "id": "36773fbd-1951-817f-ae0c-efbdc7186792",
-      "url": "https://www.notion.so/GO-Hanpass-_20260521T164311-36773fbd1951817fae0cefbdc7186792",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260521T164311-36773fbd1951817fae0cefbdc7186792",
       "title": "GO Hanpass 웹 자동리포트_20260521T164311",
       "version": "1.0.0",
       "platform": "Web",
@@ -254,7 +434,7 @@
     },
     {
       "id": "36773fbd-1951-81d5-a07d-d2ffaaaaee96",
-      "url": "https://www.notion.so/GO-Hanpass-_20260521T160256-36773fbd195181d5a07dd2ffaaaaee96",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260521T160256-36773fbd195181d5a07dd2ffaaaaee96",
       "title": "GO Hanpass 웹 자동리포트_20260521T160256",
       "version": "1.0.0",
       "platform": "Web",
@@ -272,7 +452,7 @@
     },
     {
       "id": "36773fbd-1951-81eb-94da-ff06e6e5cd6d",
-      "url": "https://www.notion.so/GO-Hanpass-_20260521T135350-36773fbd195181eb94daff06e6e5cd6d",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260521T135350-36773fbd195181eb94daff06e6e5cd6d",
       "title": "GO Hanpass 웹 자동리포트_20260521T135350",
       "version": "1.0.0",
       "platform": "Web",
@@ -290,7 +470,7 @@
     },
     {
       "id": "36773fbd-1951-8150-aefc-fc82702eeb20",
-      "url": "https://www.notion.so/GO-Hanpass-_20260521T091952-36773fbd19518150aefcfc82702eeb20",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260521T091952-36773fbd19518150aefcfc82702eeb20",
       "title": "GO Hanpass 웹 자동리포트_20260521T091952",
       "version": "1.0.0",
       "platform": "Web",
@@ -308,7 +488,7 @@
     },
     {
       "id": "36673fbd-1951-81fe-b2c0-dc7b0d12986c",
-      "url": "https://www.notion.so/GO-Hanpass-_20260520T165134-36673fbd195181feb2c0dc7b0d12986c",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260520T165134-36673fbd195181feb2c0dc7b0d12986c",
       "title": "GO Hanpass 웹 자동리포트_20260520T165134",
       "version": "1.0.0",
       "platform": "Web",
@@ -326,7 +506,7 @@
     },
     {
       "id": "36673fbd-1951-813e-99a7-ecfd231d7bf2",
-      "url": "https://www.notion.so/GO-Hanpass-_20260520T164638-36673fbd1951813e99a7ecfd231d7bf2",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260520T164638-36673fbd1951813e99a7ecfd231d7bf2",
       "title": "GO Hanpass 웹 자동리포트_20260520T164638",
       "version": "1.0.0",
       "platform": "Web",
@@ -344,7 +524,7 @@
     },
     {
       "id": "36673fbd-1951-81ef-8fb7-fdc02192dee2",
-      "url": "https://www.notion.so/GO-Hanpass-_20260520T154635-36673fbd195181ef8fb7fdc02192dee2",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260520T154635-36673fbd195181ef8fb7fdc02192dee2",
       "title": "GO Hanpass 웹 자동리포트_20260520T154635",
       "version": "1.0.0",
       "platform": "Web",
@@ -362,7 +542,7 @@
     },
     {
       "id": "36573fbd-1951-81ac-9a8d-dc34d4f3e9a1",
-      "url": "https://www.notion.so/GO-Hanpass-_20260519T100957-36573fbd195181ac9a8ddc34d4f3e9a1",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260519T100957-36573fbd195181ac9a8ddc34d4f3e9a1",
       "title": "GO Hanpass 웹 자동리포트_20260519T100957",
       "version": "1.0.0",
       "platform": "Web",
@@ -380,7 +560,7 @@
     },
     {
       "id": "36573fbd-1951-8107-ae26-da502e0c68ac",
-      "url": "https://www.notion.so/GO-Hanpass-_20260519T091747-36573fbd19518107ae26da502e0c68ac",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260519T091747-36573fbd19518107ae26da502e0c68ac",
       "title": "GO Hanpass 웹 자동리포트_20260519T091747",
       "version": "1.0.0",
       "platform": "Web",
@@ -398,7 +578,7 @@
     },
     {
       "id": "36573fbd-1951-81ab-b689-d08dd7c8ec01",
-      "url": "https://www.notion.so/GO-Hanpass-_20260519T091158-36573fbd195181abb689d08dd7c8ec01",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260519T091158-36573fbd195181abb689d08dd7c8ec01",
       "title": "GO Hanpass 웹 자동리포트_20260519T091158",
       "version": "1.0.0",
       "platform": "Web",
@@ -416,7 +596,7 @@
     },
     {
       "id": "36573fbd-1951-81c6-99c2-f39b6cb148ee",
-      "url": "https://www.notion.so/GO-Hanpass-_20260519T085747-36573fbd195181c699c2f39b6cb148ee",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260519T085747-36573fbd195181c699c2f39b6cb148ee",
       "title": "GO Hanpass 웹 자동리포트_20260519T085747",
       "version": "1.0.0",
       "platform": "Web",
@@ -434,7 +614,7 @@
     },
     {
       "id": "36473fbd-1951-819f-b012-fb501d56e8ea",
-      "url": "https://www.notion.so/GO-Hanpass-_20260518T180518-36473fbd1951819fb012fb501d56e8ea",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260518T180518-36473fbd1951819fb012fb501d56e8ea",
       "title": "GO Hanpass 웹 자동리포트_20260518T180518",
       "version": "1.0.0",
       "platform": "Web",
@@ -452,7 +632,7 @@
     },
     {
       "id": "36473fbd-1951-818a-807a-c2ed402aa6f4",
-      "url": "https://www.notion.so/GO-Hanpass-_20260518T175509-36473fbd1951818a807ac2ed402aa6f4",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260518T175509-36473fbd1951818a807ac2ed402aa6f4",
       "title": "GO Hanpass 웹 자동리포트_20260518T175509",
       "version": "1.0.0",
       "platform": "Web",
@@ -470,7 +650,7 @@
     },
     {
       "id": "36473fbd-1951-817d-98e2-ed48d8c5eaec",
-      "url": "https://www.notion.so/GO-Hanpass-_20260518T172317-36473fbd1951817d98e2ed48d8c5eaec",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260518T172317-36473fbd1951817d98e2ed48d8c5eaec",
       "title": "GO Hanpass 웹 자동리포트_20260518T172317",
       "version": "1.0.0",
       "platform": "Web",
@@ -488,7 +668,7 @@
     },
     {
       "id": "36473fbd-1951-8155-82d3-e2e4e2111286",
-      "url": "https://www.notion.so/GO-Hanpass-_20260518T172044-36473fbd1951815582d3e2e4e2111286",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260518T172044-36473fbd1951815582d3e2e4e2111286",
       "title": "GO Hanpass 웹 자동리포트_20260518T172044",
       "version": "1.0.0",
       "platform": "Web",
@@ -506,7 +686,7 @@
     },
     {
       "id": "36473fbd-1951-813c-8121-da8f8effbeb9",
-      "url": "https://www.notion.so/GO-Hanpass-_20260518T170707-36473fbd1951813c8121da8f8effbeb9",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260518T170707-36473fbd1951813c8121da8f8effbeb9",
       "title": "GO Hanpass 웹 자동리포트_20260518T170707",
       "version": "1.0.0",
       "platform": "Web",
@@ -524,7 +704,7 @@
     },
     {
       "id": "36473fbd-1951-815e-8458-c3e9e25b846f",
-      "url": "https://www.notion.so/GO-Hanpass-_20260518T165217-36473fbd1951815e8458c3e9e25b846f",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260518T165217-36473fbd1951815e8458c3e9e25b846f",
       "title": "GO Hanpass 웹 자동리포트_20260518T165217",
       "version": "1.0.0",
       "platform": "Web",
@@ -542,7 +722,7 @@
     },
     {
       "id": "4a473fbd-1951-825a-8293-814a4fea0e4e",
-      "url": "https://www.notion.so/GO-Hanpass-_20260518_152159-4a473fbd1951825a8293814a4fea0e4e",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260518_152159-4a473fbd1951825a8293814a4fea0e4e",
       "title": "GO Hanpass 자동리포트_20260518_152159",
       "version": "1.0.0",
       "platform": "Web",
@@ -560,7 +740,7 @@
     },
     {
       "id": "c0d73fbd-1951-8377-9dc1-81421b6d11a2",
-      "url": "https://www.notion.so/GO-Hanpass-_20260518_152015-c0d73fbd195183779dc181421b6d11a2",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260518_152015-c0d73fbd195183779dc181421b6d11a2",
       "title": "GO Hanpass 자동리포트_20260518_152015",
       "version": "1.0.0",
       "platform": "Web",
@@ -578,7 +758,7 @@
     },
     {
       "id": "48373fbd-1951-8213-8b62-8164e19e3926",
-      "url": "https://www.notion.so/GO-Hanpass-_20260513_152311-48373fbd195182138b628164e19e3926",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260513_152311-48373fbd195182138b628164e19e3926",
       "title": "GO Hanpass 자동리포트_20260513_152311",
       "version": "1.0.0",
       "platform": "Web",
@@ -596,7 +776,7 @@
     },
     {
       "id": "2dd73fbd-1951-8248-9095-81e0796dd101",
-      "url": "https://www.notion.so/GO-Hanpass-_20260513_142323-2dd73fbd19518248909581e0796dd101",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260513_142323-2dd73fbd19518248909581e0796dd101",
       "title": "GO Hanpass 자동리포트_20260513_142323",
       "version": "1.0.0",
       "platform": "Web",
@@ -614,7 +794,7 @@
     },
     {
       "id": "82b73fbd-1951-8249-bb65-01c5d6e9ccd0",
-      "url": "https://www.notion.so/GO-Hanpass-_20260513_144225-82b73fbd19518249bb6501c5d6e9ccd0",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260513_144225-82b73fbd19518249bb6501c5d6e9ccd0",
       "title": "GO Hanpass 자동리포트_20260513_144225",
       "version": "1.0.0",
       "platform": "Web",
@@ -632,7 +812,7 @@
     },
     {
       "id": "ecf73fbd-1951-8277-9e22-8159a11657f0",
-      "url": "https://www.notion.so/GO-Hanpass-_20260513_152311-ecf73fbd195182779e228159a11657f0",
+      "url": "https://app.notion.com/p/GO-Hanpass-_20260513_152311-ecf73fbd195182779e228159a11657f0",
       "title": "GO Hanpass 자동리포트_20260513_152311",
       "version": "1.0.0",
       "platform": "Web",

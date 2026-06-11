@@ -1,0 +1,15 @@
+📂 시나리오 1개 추가
+🚀 전체 실행 시작
+🧩 실행 시나리오 수: 1
+📱 브라우저 설정: Chrome / 모바일 / 500x812
+▶ [1/1] 실행: /Users/jangminho/Desktop/gohanpass_automation/mobile-web-validator/scenarios/01_login.py
+✅ [1/1] 다음 시나리오 진행
+===== 전체 결과 =====
+📄 시나리오 결과: 01_login.py
+  - open_url: PASS
+  - title_check: PASS
+  - email_input: PASS
+  - password_input_click: PASS
+  - password_keypad_input: PASS
+  - confirm_click: PASS
+  - login_result_check: PASS

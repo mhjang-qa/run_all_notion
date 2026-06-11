@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GO.Hanpass 결함 추이 대시보드</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --ink: #172033;
+      --muted: #667085;
+      --line: #d9e0ea;
+      --soft: #eef3f8;
+      --green: #16a36b;
+      --blue: #2563eb;
+      --sky: #0ea5e9;
+      --orange: #f59e0b;
+      --red: #ef4444;
+      --violet: #7c3aed;
+      --navy: #24324a;
+      --shadow: 0 10px 28px rgba(18, 32, 54, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      width: 100%;
+      min-width: 0;
+      min-height: 1800px;
+      overflow-x: hidden;
+      background: var(--bg);
+    }
+
+    body {
+      width: 100%;
+      min-width: 0;
+      min-height: 1800px;
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      letter-spacing: 0;
+      overflow-x: hidden;
+      overscroll-behavior-x: none;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1480px;
+      min-width: 0;
+      min-height: 1800px;
+      margin: 0 auto;
+      padding: clamp(14px, 2vw, 22px);
+      overflow-x: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 16px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .topbar > div {
+      min-width: 0;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      max-width: 100%;
+      word-break: keep-all;
+    }
+
+    .source-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+      flex: 0 1 540px;
+      min-width: 0;
+      max-width: 540px;
+    }
+
+    .source-links a {
+      text-decoration: none;
+      color: #344054;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(18, 32, 54, 0.04);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .panel, .kpi {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .kpi {
+      min-height: 116px;
+      min-width: 0;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .kpi-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .kpi-value {
+      margin-top: 10px;
+      font-size: 32px;
+      line-height: 1;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .kpi-sub {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .kpi.accent {
+      background: linear-gradient(135deg, #20304b 0%, #31516d 100%);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+
+    .kpi.accent .kpi-label,
+    .kpi.accent .kpi-sub { color: rgba(255, 255, 255, 0.78); }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(380px, 0.85fr);
+      gap: 14px;
+      align-items: start;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .panel {
+      padding: 18px;
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .panel-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      min-width: 0;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .panel-note {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: var(--soft);
+      color: #344054;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .trend-wrap {
+      min-height: 330px;
+    }
+
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .axis text, .chart-label {
+      fill: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .grid-line {
+      stroke: #e8edf3;
+      stroke-width: 1;
+    }
+
+    .trend-line {
+      fill: none;
+      stroke: var(--blue);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .trend-area {
+      fill: rgba(37, 99, 235, 0.10);
+    }
+
+    .point {
+      fill: #fff;
+      stroke: var(--blue);
+      stroke-width: 3;
+    }
+
+    .point.latest {
+      fill: var(--blue);
+      stroke: #fff;
+      stroke-width: 4;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .severity-stack,
+    .mini-stack {
+      display: flex;
+      overflow: hidden;
+      width: 100%;
+      border-radius: 999px;
+      background: #e7ebf1;
+    }
+
+    .severity-stack { height: 30px; border: 1px solid #d9e0ea; }
+    .mini-stack { height: 12px; }
+
+    .seg-blocker { background: var(--violet); }
+    .seg-critical { background: var(--red); }
+    .seg-major { background: var(--orange); }
+    .seg-minor { background: var(--blue); }
+
+    .severity-legend {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .legend-item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fbfcfe;
+    }
+
+    .legend-name {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      display: inline-block;
+      flex: 0 0 auto;
+    }
+
+    .legend-value {
+      margin-top: 7px;
+      font-size: 20px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .type-list {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .type-row {
+      display: grid;
+      grid-template-columns: minmax(78px, 96px) minmax(0, 1fr) 58px;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .type-name {
+      font-size: 12px;
+      color: #344054;
+      font-weight: 800;
+      word-break: keep-all;
+    }
+
+    .bar-rail {
+      height: 16px;
+      border-radius: 999px;
+      background: #e8edf3;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #0ea5e9 0%, #2563eb 100%);
+    }
+
+    .type-num {
+      text-align: right;
+      font-size: 12px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .funnel {
+      display: grid;
+      gap: 9px;
+    }
+
+    .funnel-step {
+      display: grid;
+      grid-template-columns: minmax(84px, 120px) minmax(0, 1fr) 62px;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .funnel-label {
+      color: #344054;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .funnel-track {
+      height: 32px;
+      background: #edf2f7;
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .funnel-fill {
+      height: 100%;
+      min-width: 3px;
+      border-radius: 5px;
+      background: var(--navy);
+    }
+
+    .funnel-step:nth-child(1) .funnel-fill { background: #0ea5e9; }
+    .funnel-step:nth-child(2) .funnel-fill { background: #64748b; }
+    .funnel-step:nth-child(3) .funnel-fill { background: #ef4444; }
+    .funnel-step:nth-child(4) .funnel-fill { background: #f59e0b; }
+    .funnel-step:nth-child(5) .funnel-fill { background: #16a36b; }
+    .funnel-step:nth-child(6) .funnel-fill { background: #0f766e; }
+
+    .funnel-num {
+      text-align: right;
+      font-size: 13px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .insight-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .insight {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      min-height: 118px;
+    }
+
+    .insight strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .insight p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .matrix {
+      width: 100%;
+      max-width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 12px;
+    }
+
+    .matrix th,
+    .matrix td {
+      border-bottom: 1px solid #edf1f5;
+      padding: 9px 8px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .matrix th:first-child,
+    .matrix td:first-child {
+      text-align: left;
+      font-weight: 800;
+      color: #344054;
+    }
+
+    .matrix th {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .timeline-row {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr) 56px;
+      gap: 10px;
+      align-items: center;
+      font-size: 12px;
+      min-width: 0;
+    }
+
+    .timeline-date {
+      color: #344054;
+      font-weight: 900;
+    }
+
+    .timeline-num {
+      text-align: right;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .delta {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .delta.up { color: #b42318; }
+    .delta.flat { color: #667085; }
+
+    .footnote {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 1180px) {
+      .topbar { display: block; }
+      .source-links { justify-content: flex-start; margin-top: 12px; max-width: none; }
+      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .dashboard-grid, .two-col, .insight-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .page { padding: 14px; }
+      h1 { font-size: 22px; }
+      .kpi-grid { grid-template-columns: 1fr; }
+      .panel { padding: 14px; }
+      .severity-legend { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .type-row { grid-template-columns: minmax(68px, 82px) minmax(0, 1fr) 46px; gap: 8px; }
+      .funnel-step { grid-template-columns: minmax(72px, 92px) minmax(0, 1fr) 48px; gap: 8px; }
+      .source-links a { padding: 6px 8px; }
+    }
+
+    @media (max-width: 420px) {
+      .panel-title-row { display: block; }
+      .badge { margin-top: 10px; }
+      .severity-legend { grid-template-columns: 1fr; }
+      .source-links { gap: 6px; }
+      .matrix th, .matrix td { padding: 8px 5px; font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="topbar">
+      <div>
+        <h1>한패스 결함 추이 대시보드</h1>
+        <div class="subtitle" id="subtitle"></div>
+      </div>
+      <nav class="source-links" id="sourceLinks" aria-label="원천 데이터"></nav>
+    </section>
+
+    <section class="kpi-grid" id="kpiGrid"></section>
+
+    <section class="dashboard-grid">
+      <div>
+        <article class="panel trend-wrap">
+          <div class="panel-title-row">
+            <div>
+              <h2 class="panel-title">누적 결함 추이</h2>
+              <div class="panel-note">날짜별 HTML을 원천 스냅샷으로 사용했습니다.</div>
+            </div>
+            <span class="badge" id="trendBadge"></span>
+          </div>
+          <div id="trendChart"></div>
+        </article>
+
+        <div class="two-col">
+          <article class="panel">
+            <div class="panel-title-row">
+              <div>
+                <h2 class="panel-title">최신 심각도 분포</h2>
+                <div class="panel-note">Blocker와 Critical은 위험 결함으로 합산합니다.</div>
+              </div>
+            </div>
+            <div class="severity-stack" id="severityStack"></div>
+            <div class="severity-legend" id="severityLegend"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-title-row">
+              <div>
+                <h2 class="panel-title">최신 유형별 규모</h2>
+                <div class="panel-note">최신 스냅샷의 결함 유형 비중입니다.</div>
+              </div>
+            </div>
+            <div class="type-list" id="typeList"></div>
+          </article>
+        </div>
+
+        <section class="insight-grid" id="insights"></section>
+      </div>
+
+      <aside>
+        <article class="panel">
+          <div class="panel-title-row">
+            <div>
+              <h2 class="panel-title">상태 퍼널</h2>
+              <div class="panel-note">최신 상태 상위 분포를 처리 흐름 기준으로 재정렬하고, 배포 단계는 최근 관측값을 함께 반영했습니다.</div>
+            </div>
+          </div>
+          <div class="funnel" id="funnel"></div>
+        </article>
+
+        <article class="panel" style="margin-top:14px;">
+          <div class="panel-title-row">
+            <div>
+              <h2 class="panel-title">유형 x 심각도</h2>
+              <div class="panel-note">최신 기준 상세 분포입니다.</div>
+            </div>
+          </div>
+          <div id="matrix"></div>
+        </article>
+
+        <article class="panel" style="margin-top:14px;">
+          <div class="panel-title-row">
+            <div>
+              <h2 class="panel-title">스냅샷별 변동</h2>
+              <div class="panel-note">직전 스냅샷 대비 총 결함 증감입니다.</div>
+            </div>
+          </div>
+          <div class="timeline" id="timeline"></div>
+        </article>
+      </aside>
+    </section>
+
+    <p class="footnote">
+      원천 파일은 루트의 날짜별 HTML입니다. 같은 등록일자 범위가 반복되는 05/04 이후 스냅샷은 상태 변경 추적에 의미가 있으며, 총 결함 수는 548건으로 유지됩니다.
+    </p>
+  </main>
+
+  <script>
+    const snapshots = [
+      { file: "0421.html", label: "04/21", total: 432, range: ["2026-03-30", "2026-04-20"], sev: { blocker: 1, critical: 26, major: 77, minor: 328 }, types: [{ type: "정책 불일치", blocker: 1, critical: 7, major: 22, minor: 142, total: 172 }, { type: "UX/UI", blocker: 0, critical: 2, major: 5, minor: 129, total: 136 }, { type: "기능", blocker: 0, critical: 17, major: 50, minor: 47, total: 114 }, { type: "개선의견", blocker: 0, critical: 0, major: 0, minor: 5, total: 5 }, { type: "텍스트", blocker: 0, critical: 0, major: 0, minor: 5, total: 5 }], statuses: [{ status: "QA 검증 - 회귀 (QA Verification)", count: 152 }, { status: "배정 (Assigned)", count: 81 }, { status: "완료 (Done)", count: 53 }, { status: "결함 아님 (Not an issue)", count: 53 }, { status: "등록 (Registered)", count: 27 }, { status: "dev 배포-완료", count: 22 }, { status: "결함 재발생 (Reopen)", count: 14 }, { status: "기획서 결함", count: 13 }] },
+      { file: "0422_heatmap.html", label: "04/22", total: 443, range: ["2026-03-30", "2026-04-21"], sev: { blocker: 1, critical: 27, major: 81, minor: 334 }, types: [{ type: "정책 불일치", blocker: 1, critical: 7, major: 23, minor: 128, total: 159 }, { type: "UX/UI", blocker: 0, critical: 2, major: 5, minor: 139, total: 146 }, { type: "기능", blocker: 0, critical: 18, major: 53, minor: 55, total: 126 }, { type: "텍스트", blocker: 0, critical: 0, major: 0, minor: 6, total: 6 }, { type: "개선의견", blocker: 0, critical: 0, major: 0, minor: 5, total: 5 }, { type: "성능", blocker: 0, critical: 0, major: 0, minor: 1, total: 1 }], statuses: [{ status: "완료 (Done)", count: 216 }, { status: "배정 (Assigned)", count: 57 }, { status: "dev 배포-완료", count: 32 }, { status: "QA 검증 - 회귀 (QA Verification)", count: 31 }, { status: "등록 (Registered)", count: 30 }, { status: "결함 아님 (Not an issue)", count: 24 }, { status: "결함 재발생 (Reopen)", count: 16 }, { status: "기획서 결함", count: 13 }] },
+      { file: "0423_heatmap.html", label: "04/23", total: 456, range: ["2026-03-30", "2026-04-22"], sev: { blocker: 1, critical: 27, major: 82, minor: 346 }, types: [{ type: "정책 불일치", blocker: 1, critical: 7, major: 23, minor: 130, total: 161 }, { type: "UX/UI", blocker: 0, critical: 2, major: 5, minor: 142, total: 149 }, { type: "기능", blocker: 0, critical: 18, major: 54, minor: 59, total: 131 }, { type: "텍스트", blocker: 0, critical: 0, major: 0, minor: 9, total: 9 }, { type: "개선의견", blocker: 0, critical: 0, major: 0, minor: 5, total: 5 }, { type: "성능", blocker: 0, critical: 0, major: 0, minor: 1, total: 1 }], statuses: [{ status: "완료 (Done)", count: 252 }, { status: "QA 검증 - 회귀 (QA Verification)", count: 37 }, { status: "등록 (Registered)", count: 32 }, { status: "결함 아님 (Not an issue)", count: 29 }, { status: "배정 (Assigned)", count: 26 }, { status: "수정완료 (배포-이전)", count: 17 }, { status: "dev 배포-완료", count: 16 }, { status: "결함 재발생 (Reopen)", count: 13 }] },
+      { file: "0427_heatmap.html", label: "04/27", total: 501, range: ["2026-03-30", "2026-04-24"], sev: { blocker: 1, critical: 33, major: 92, minor: 375 }, types: [{ type: "정책 불일치", blocker: 1, critical: 9, major: 25, minor: 133, total: 168 }, { type: "UX/UI", blocker: 0, critical: 2, major: 5, minor: 151, total: 158 }, { type: "기능", blocker: 0, critical: 22, major: 62, minor: 69, total: 153 }, { type: "텍스트", blocker: 0, critical: 0, major: 0, minor: 15, total: 15 }, { type: "개선의견", blocker: 0, critical: 0, major: 0, minor: 6, total: 6 }, { type: "성능", blocker: 0, critical: 0, major: 0, minor: 1, total: 1 }], statuses: [{ status: "완료 (Done)", count: 286 }, { status: "등록 (Registered)", count: 45 }, { status: "QA 검증 - 회귀 (QA Verification)", count: 44 }, { status: "결함 아님 (Not an issue)", count: 27 }, { status: "배정 (Assigned)", count: 23 }, { status: "dev 배포-완료", count: 23 }, { status: "수정완료 (배포-이전)", count: 13 }, { status: "기획서 결함", count: 12 }] },
+      { file: "0428_heatmap.html", label: "04/28", total: 530, range: ["2026-03-30", "2026-04-27"], sev: { blocker: 1, critical: 44, major: 103, minor: 382 }, types: [{ type: "기능", blocker: 0, critical: 33, major: 71, minor: 74, total: 178 }, { type: "정책 불일치", blocker: 1, critical: 9, major: 25, minor: 132, total: 167 }, { type: "UX/UI", blocker: 0, critical: 2, major: 7, minor: 151, total: 160 }, { type: "텍스트", blocker: 0, critical: 0, major: 0, minor: 18, total: 18 }, { type: "개선의견", blocker: 0, critical: 0, major: 0, minor: 6, total: 6 }, { type: "성능", blocker: 0, critical: 0, major: 0, minor: 1, total: 1 }], statuses: [{ status: "완료 (Done)", count: 315 }, { status: "등록 (Registered)", count: 57 }, { status: "QA 검증 - 회귀 (QA Verification)", count: 38 }, { status: "결함 아님 (Not an issue)", count: 26 }, { status: "dev 배포-완료", count: 23 }, { status: "배정 (Assigned)", count: 21 }, { status: "기획서 결함", count: 13 }, { status: "추후 수정", count: 10 }] },
+      { file: "0429_heatmap.html", label: "04/29", total: 547, range: ["2026-03-30", "2026-04-28"], sev: { blocker: 1, critical: 44, major: 109, minor: 393 }, types: [{ type: "기능", blocker: 0, critical: 33, major: 76, minor: 78, total: 187 }, { type: "정책 불일치", blocker: 1, critical: 9, major: 26, minor: 132, total: 168 }, { type: "UX/UI", blocker: 0, critical: 2, major: 7, minor: 152, total: 161 }, { type: "텍스트", blocker: 0, critical: 0, major: 0, minor: 24, total: 24 }, { type: "개선의견", blocker: 0, critical: 0, major: 0, minor: 6, total: 6 }, { type: "성능", blocker: 0, critical: 0, major: 0, minor: 1, total: 1 }], statuses: [{ status: "완료 (Done)", count: 354 }, { status: "등록 (Registered)", count: 64 }, { status: "QA 검증 - 회귀 (QA Verification)", count: 28 }, { status: "결함 아님 (Not an issue)", count: 28 }, { status: "배정 (Assigned)", count: 18 }, { status: "기획서 결함", count: 14 }, { status: "결함 재발생 (Reopen)", count: 13 }, { status: "추후 수정", count: 10 }] },
+      { file: "0504_heatmap.html", label: "05/04", total: 548, range: ["2026-03-30", "2026-04-29"], sev: { blocker: 1, critical: 44, major: 109, minor: 394 }, types: [{ type: "기능", blocker: 0, critical: 33, major: 76, minor: 79, total: 188 }, { type: "정책 불일치", blocker: 1, critical: 9, major: 26, minor: 132, total: 168 }, { type: "UX/UI", blocker: 0, critical: 2, major: 7, minor: 152, total: 161 }, { type: "텍스트", blocker: 0, critical: 0, major: 0, minor: 24, total: 24 }, { type: "개선의견", blocker: 0, critical: 0, major: 0, minor: 6, total: 6 }, { type: "성능", blocker: 0, critical: 0, major: 0, minor: 1, total: 1 }], statuses: [{ status: "완료 (Done)", count: 398 }, { status: "등록 (Registered)", count: 48 }, { status: "배정 (Assigned)", count: 19 }, { status: "QA 검증 - 회귀 (QA Verification)", count: 15 }, { status: "기획서 결함", count: 14 }, { status: "Prod 배포 완료", count: 13 }, { status: "추후 수정", count: 11 }, { status: "결함 아님 (Not an issue)", count: 11 }] },
+      { file: "0506_heatmap.html", label: "05/06", total: 548, range: ["2026-03-30", "2026-04-29"], sev: { blocker: 1, critical: 44, major: 109, minor: 394 }, types: [{ type: "기능", blocker: 0, critical: 33, major: 76, minor: 79, total: 188 }, { type: "정책 불일치", blocker: 1, critical: 9, major: 26, minor: 132, total: 168 }, { type: "UX/UI", blocker: 0, critical: 2, major: 7, minor: 152, total: 161 }, { type: "텍스트", blocker: 0, critical: 0, major: 0, minor: 24, total: 24 }, { type: "개선의견", blocker: 0, critical: 0, major: 0, minor: 6, total: 6 }, { type: "성능", blocker: 0, critical: 0, major: 0, minor: 1, total: 1 }], statuses: [{ status: "완료 (Done)", count: 403 }, { status: "등록 (Registered)", count: 48 }, { status: "배정 (Assigned)", count: 17 }, { status: "결함 재발생 (Reopen)", count: 17 }, { status: "QA 검증 - 회귀 (QA Verification)", count: 15 }, { status: "기획서 결함", count: 14 }, { status: "결함 아님 (Not an issue)", count: 12 }, { status: "추후 수정", count: 11 }] },
+      { file: "0507_heatmap.html", label: "05/07", total: 548, range: ["2026-03-30", "2026-04-29"], sev: { blocker: 1, critical: 44, major: 109, minor: 394 }, types: [{ type: "기능", blocker: 0, critical: 33, major: 76, minor: 79, total: 188 }, { type: "정책 불일치", blocker: 1, critical: 9, major: 26, minor: 132, total: 168 }, { type: "UX/UI", blocker: 0, critical: 2, major: 7, minor: 152, total: 161 }, { type: "텍스트", blocker: 0, critical: 0, major: 0, minor: 24, total: 24 }, { type: "개선의견", blocker: 0, critical: 0, major: 0, minor: 6, total: 6 }, { type: "성능", blocker: 0, critical: 0, major: 0, minor: 1, total: 1 }], statuses: [{ status: "완료 (Done)", count: 407 }, { status: "등록 (Registered)", count: 46 }, { status: "결함 재발생 (Reopen)", count: 18 }, { status: "배정 (Assigned)", count: 17 }, { status: "기획서 결함", count: 14 }, { status: "QA 검증 - 회귀 (QA Verification)", count: 13 }, { status: "결함 아님 (Not an issue)", count: 12 }, { status: "추후 수정", count: 11 }] },
+      { file: "0508_heatmap.html", label: "05/08", total: 548, range: ["2026-03-30", "2026-04-29"], sev: { blocker: 1, critical: 44, major: 109, minor: 394 }, types: [{ type: "기능", blocker: 0, critical: 33, major: 76, minor: 79, total: 188 }, { type: "정책 불일치", blocker: 1, critical: 9, major: 26, minor: 132, total: 168 }, { type: "UX/UI", blocker: 0, critical: 2, major: 7, minor: 152, total: 161 }, { type: "텍스트", blocker: 0, critical: 0, major: 0, minor: 24, total: 24 }, { type: "개선의견", blocker: 0, critical: 0, major: 0, minor: 6, total: 6 }, { type: "성능", blocker: 0, critical: 0, major: 0, minor: 1, total: 1 }], statuses: [{ status: "완료 (Done)", count: 408 }, { status: "등록 (Registered)", count: 46 }, { status: "결함 재발생 (Reopen)", count: 19 }, { status: "배정 (Assigned)", count: 17 }, { status: "기획서 결함", count: 14 }, { status: "QA 검증 - 회귀 (QA Verification)", count: 13 }, { status: "결함 아님 (Not an issue)", count: 12 }, { status: "추후 수정", count: 11 }] },
+      { file: "0511_heatmap.html", label: "05/11", total: 548, range: ["2026-03-30", "2026-04-29"], sev: { blocker: 1, critical: 44, major: 109, minor: 394 }, types: [{ type: "기능", blocker: 0, critical: 33, major: 76, minor: 79, total: 188 }, { type: "정책 불일치", blocker: 1, critical: 9, major: 26, minor: 132, total: 168 }, { type: "UX/UI", blocker: 0, critical: 2, major: 7, minor: 152, total: 161 }, { type: "텍스트", blocker: 0, critical: 0, major: 0, minor: 24, total: 24 }, { type: "개선의견", blocker: 0, critical: 0, major: 0, minor: 6, total: 6 }, { type: "성능", blocker: 0, critical: 0, major: 0, minor: 1, total: 1 }], statuses: [{ status: "완료 (Done)", count: 409 }, { status: "등록 (Registered)", count: 46 }, { status: "결함 재발생 (Reopen)", count: 19 }, { status: "배정 (Assigned)", count: 17 }, { status: "기획서 결함", count: 14 }, { status: "QA 검증 - 회귀 (QA Verification)", count: 13 }, { status: "결함 아님 (Not an issue)", count: 12 }, { status: "추후 수정", count: 11 }] }
+    ];
+
+    const severityMeta = [
+      { key: "blocker", label: "Blocker", cls: "seg-blocker", color: "#7c3aed" },
+      { key: "critical", label: "Critical", cls: "seg-critical", color: "#ef4444" },
+      { key: "major", label: "Major", cls: "seg-major", color: "#f59e0b" },
+      { key: "minor", label: "Minor", cls: "seg-minor", color: "#2563eb" }
+    ];
+
+    const fmt = new Intl.NumberFormat("ko-KR");
+    const pct = (part, total, digits = 1) => total ? `${((part / total) * 100).toFixed(digits)}%` : "0.0%";
+    const latest = snapshots[snapshots.length - 1];
+    const first = snapshots[0];
+    const latestRisk = latest.sev.blocker + latest.sev.critical;
+    const topType = [...latest.types].sort((a, b) => b.total - a.total)[0];
+    const latestDone = latest.statuses.find((s) => s.status.includes("완료 (Done)"))?.count || 0;
+    const latestReopen = latest.statuses.find((s) => s.status.includes("재발생"))?.count || 0;
+
+    document.getElementById("subtitle").textContent =
+      `원천 스냅샷 ${snapshots.length}개 · 등록일자 범위 ${latest.range[0]} ~ ${latest.range[1]} · 최신 스냅샷 ${latest.label}`;
+
+    document.getElementById("sourceLinks").innerHTML = snapshots.map((item) =>
+      `<a href="${item.file}" title="${item.file}">${item.label}</a>`
+    ).join("");
+
+    document.getElementById("kpiGrid").innerHTML = [
+      { label: "최신 총 결함", value: fmt.format(latest.total), sub: `${first.label} 대비 +${fmt.format(latest.total - first.total)}건`, accent: true },
+      { label: "증가율", value: pct(latest.total - first.total, first.total), sub: `${first.total}건에서 ${latest.total}건` },
+      { label: "Critical + Blocker", value: fmt.format(latestRisk), sub: `전체 대비 ${pct(latestRisk, latest.total)}` },
+      { label: "최다 유형", value: topType.type, sub: `${fmt.format(topType.total)}건 · ${pct(topType.total, latest.total)}` },
+      { label: "완료 상태", value: fmt.format(latestDone), sub: `최신 상태 상위 분포 기준 ${pct(latestDone, latest.total)}` }
+    ].map((item) => `
+      <article class="kpi ${item.accent ? "accent" : ""}">
+        <div>
+          <div class="kpi-label">${item.label}</div>
+          <div class="kpi-value" style="${item.value.length > 5 ? "font-size:24px; line-height:1.2;" : ""}">${item.value}</div>
+        </div>
+        <div class="kpi-sub">${item.sub}</div>
+      </article>
+    `).join("");
+
+    function drawTrend() {
+      const width = 900;
+      const height = 300;
+      const pad = { left: 44, right: 18, top: 22, bottom: 42 };
+      const vals = snapshots.map((s) => s.total);
+      const min = Math.floor((Math.min(...vals) - 10) / 10) * 10;
+      const max = Math.ceil((Math.max(...vals) + 10) / 10) * 10;
+      const x = (i) => pad.left + (i * (width - pad.left - pad.right)) / (snapshots.length - 1);
+      const y = (v) => pad.top + ((max - v) * (height - pad.top - pad.bottom)) / (max - min);
+      const points = snapshots.map((s, i) => [x(i), y(s.total)]);
+      const line = points.map((p) => p.join(",")).join(" ");
+      const area = `${pad.left},${height - pad.bottom} ${line} ${width - pad.right},${height - pad.bottom}`;
+      const ticks = [min, Math.round((min + max) / 2), max];
+
+      document.getElementById("trendBadge").textContent = `${first.label} → ${latest.label} +${latest.total - first.total}건`;
+      document.getElementById("trendChart").innerHTML = `
+        <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="누적 결함 추이">
+          ${ticks.map((t) => `<line class="grid-line" x1="${pad.left}" y1="${y(t)}" x2="${width - pad.right}" y2="${y(t)}"></line><text class="chart-label" x="0" y="${y(t) + 4}">${fmt.format(t)}</text>`).join("")}
+          <polyline class="trend-area" points="${area}"></polyline>
+          <polyline class="trend-line" points="${line}"></polyline>
+          ${points.map((p, i) => `<circle class="point ${i === points.length - 1 ? "latest" : ""}" cx="${p[0]}" cy="${p[1]}" r="${i === points.length - 1 ? 7 : 5}"></circle>`).join("")}
+          ${snapshots.map((s, i) => `<text class="chart-label" x="${x(i)}" y="${height - 14}" text-anchor="middle">${s.label}</text>`).join("")}
+          ${snapshots.map((s, i) => `<text class="chart-label" x="${x(i)}" y="${y(s.total) - 12}" text-anchor="middle">${fmt.format(s.total)}</text>`).join("")}
+        </svg>
+      `;
+    }
+
+    function renderSeverity() {
+      document.getElementById("severityStack").innerHTML = severityMeta.map((m) =>
+        `<div class="${m.cls}" style="width:${pct(latest.sev[m.key], latest.total)}" title="${m.label} ${latest.sev[m.key]}건"></div>`
+      ).join("");
+
+      document.getElementById("severityLegend").innerHTML = severityMeta.map((m) => `
+        <div class="legend-item">
+          <div class="legend-name"><span class="dot" style="background:${m.color}"></span>${m.label}</div>
+          <div class="legend-value">${fmt.format(latest.sev[m.key])}</div>
+          <div class="panel-note">${pct(latest.sev[m.key], latest.total)}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderTypes() {
+      const max = Math.max(...latest.types.map((t) => t.total));
+      document.getElementById("typeList").innerHTML = latest.types.map((type) => `
+        <div class="type-row">
+          <div class="type-name">${type.type}</div>
+          <div>
+            <div class="bar-rail"><div class="bar-fill" style="width:${pct(type.total, max, 2)}"></div></div>
+            <div class="mini-stack" style="margin-top:6px;">
+              ${severityMeta.map((m) => `<div class="${m.cls}" style="width:${pct(type[m.key], type.total, 2)}"></div>`).join("")}
+            </div>
+          </div>
+          <div class="type-num">${fmt.format(type.total)}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderFunnel() {
+      const statusCount = (needle) => latest.statuses.find((s) => s.status.includes(needle))?.count || 0;
+      const prod = latest.statuses.find((s) => s.status.includes("Prod"))?.count ||
+        [...snapshots].reverse().find((s) => s.statuses.some((item) => item.status.includes("Prod")))?.statuses.find((item) => item.status.includes("Prod"))?.count || 0;
+      const funnel = [
+        { label: "등록", count: statusCount("등록") },
+        { label: "배정", count: statusCount("배정") },
+        { label: "재발생", count: statusCount("재발생") },
+        { label: "QA 검증", count: statusCount("QA 검증") },
+        { label: "완료", count: statusCount("완료 (Done)") },
+        { label: "Prod 배포", count: prod }
+      ];
+      const max = Math.max(...funnel.map((f) => f.count), 1);
+      document.getElementById("funnel").innerHTML = funnel.map((f) => `
+        <div class="funnel-step">
+          <div class="funnel-label">${f.label}</div>
+          <div class="funnel-track"><div class="funnel-fill" style="width:${pct(f.count, max, 2)}"></div></div>
+          <div class="funnel-num">${fmt.format(f.count)}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderMatrix() {
+      document.getElementById("matrix").innerHTML = `
+        <table class="matrix">
+          <thead>
+            <tr><th>유형</th><th>B</th><th>C</th><th>M</th><th>m</th><th>합계</th></tr>
+          </thead>
+          <tbody>
+            ${latest.types.map((t) => `
+              <tr>
+                <td>${t.type}</td>
+                <td>${t.blocker}</td>
+                <td>${t.critical}</td>
+                <td>${t.major}</td>
+                <td>${t.minor}</td>
+                <td>${t.total}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderTimeline() {
+      const max = Math.max(...snapshots.map((s) => s.total));
+      document.getElementById("timeline").innerHTML = snapshots.map((s, i) => {
+        const diff = i === 0 ? 0 : s.total - snapshots[i - 1].total;
+        const deltaClass = diff > 0 ? "up" : "flat";
+        const deltaText = i === 0 ? "base" : (diff > 0 ? `+${diff}` : "0");
+        return `
+          <div class="timeline-row">
+            <div class="timeline-date">${s.label}</div>
+            <div>
+              <div class="bar-rail"><div class="bar-fill" style="width:${pct(s.total, max, 2)}"></div></div>
+              <div class="delta ${deltaClass}">${deltaText}</div>
+            </div>
+            <div class="timeline-num">${fmt.format(s.total)}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderInsights() {
+      const totalGrowth = latest.total - first.total;
+      const criticalGrowth = latest.sev.critical - first.sev.critical;
+      const doneGrowth = latestDone - (first.statuses.find((s) => s.status.includes("완료 (Done)"))?.count || 0);
+      document.getElementById("insights").innerHTML = [
+        { title: `총 결함은 ${fmt.format(totalGrowth)}건 증가`, body: `${first.label} ${first.total}건에서 ${latest.label} ${latest.total}건까지 증가했고, 05/04 이후 총량은 유지됩니다.` },
+        { title: `Critical은 ${fmt.format(criticalGrowth)}건 증가`, body: `Critical + Blocker는 ${latestRisk}건으로 최신 전체의 ${pct(latestRisk, latest.total)}입니다.` },
+        { title: `완료 상태는 ${fmt.format(doneGrowth)}건 증가`, body: `상태 상위 분포 기준 완료는 ${first.label} 53건에서 ${latest.label} ${latestDone}건으로 확대됐습니다. 재발생은 최신 ${latestReopen}건입니다.` }
+      ].map((item) => `<article class="insight"><strong>${item.title}</strong><p>${item.body}</p></article>`).join("");
+    }
+
+    drawTrend();
+    renderSeverity();
+    renderTypes();
+    renderFunnel();
+    renderMatrix();
+    renderTimeline();
+    renderInsights();
+  </script>
+</body>
+</html>

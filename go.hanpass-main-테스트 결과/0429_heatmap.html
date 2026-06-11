@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>결함 유형/심각도 히트맵</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      background: #f5f6f8;
+      color: #1f2937;
+    }
+
+    .wrap {
+      max-width: 1500px;
+      margin: 0 auto;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin: 0 0 6px;
+    }
+
+    .sub-title {
+      color: #6b7280;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 18px 20px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+      border: 1px solid #e5e7eb;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .metric-sub {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(360px, 0.9fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin: 0 0 14px;
+    }
+
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .heat-card {
+      border-radius: 18px;
+      padding: 16px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+    }
+
+    .heat-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(255,255,255,0.14), transparent 40%);
+      pointer-events: none;
+    }
+
+    .heat-card-header {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .heat-card-title {
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.25;
+      word-break: keep-all;
+    }
+
+    .heat-card-count {
+      white-space: nowrap;
+      font-size: 15px;
+      font-weight: 700;
+      opacity: 0.95;
+    }
+
+    .heat-card-sub {
+      position: relative;
+      z-index: 1;
+      margin-top: 8px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.88);
+    }
+
+    .severity-stack {
+      position: relative;
+      z-index: 1;
+      margin-top: 18px;
+      height: 22px;
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .seg {
+      height: 100%;
+    }
+
+    .seg-blocker { background: #7c3aed; }
+    .seg-critical { background: #ef4444; }
+    .seg-major { background: #f59e0b; }
+    .seg-minor { background: #3b82f6; }
+
+    .severity-detail {
+      position: relative;
+      z-index: 1;
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 12px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.95);
+    }
+
+    .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .dot.blocker { background: #7c3aed; }
+    .dot.critical { background: #ef4444; }
+    .dot.major { background: #f59e0b; }
+    .dot.minor { background: #3b82f6; }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+      align-items: center;
+    }
+
+    .legend-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #4b5563;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 999px;
+      padding: 5px 10px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #eef2f7;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      color: #6b7280;
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    td.num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .badge {
+      display: inline-block;
+      min-width: 64px;
+      text-align: center;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 11px;
+      color: #fff;
+    }
+
+    .b-minor { background: #3b82f6; }
+    .b-major { background: #f59e0b; }
+    .b-critical { background: #ef4444; }
+    .b-blocker { background: #7c3aed; }
+
+    .footnote {
+      margin-top: 16px;
+      color: #6b7280;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 1180px) {
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(160px, 1fr));
+      }
+
+      .panel-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .heatmap-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .severity-detail {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="page-title">결함 유형/심각도 히트맵</div>
+    <div class="sub-title">
+      소스 파일: 0429.xlsx · 등록일자 범위: 2026-03-30 ~ 2026-04-28 · 총 547건
+    </div>
+
+    <div class="summary-grid">
+      <div class="card">
+        <div class="metric-label">총 결함 수</div>
+        <div class="metric-value">547</div>
+        <div class="metric-sub">결함 유형 + 심각도 값 기준</div>
+      </div>
+
+      <div class="card">
+        <div class="metric-label">최다 결함 유형</div>
+        <div class="metric-value" style="font-size:24px;">기능</div>
+        <div class="metric-sub">187건</div>
+      </div>
+
+      <div class="card">
+        <div class="metric-label">Critical + Blocker</div>
+        <div class="metric-value">45</div>
+        <div class="metric-sub">전체 대비 8.2%</div>
+      </div>
+
+      <div class="card">
+        <div class="metric-label">결함 유형 수</div>
+        <div class="metric-value">6</div>
+        <div class="metric-sub">유형 분류 기준</div>
+      </div>
+    </div>
+
+    <div class="panel-grid">
+      <div class="card">
+        <div class="panel-title">결함 유형 + 심각도 히트맵</div>
+
+        <div class="heatmap-grid">
+          
+            <div class="heat-card" style="min-height:350px;">
+              <div class="heat-card-header">
+                <div class="heat-card-title">기능</div>
+                <div class="heat-card-count">187건</div>
+              </div>
+
+              <div class="heat-card-sub">전체 대비 34.2%</div>
+
+              <div class="severity-stack" title="Blocker 0건 / Critical 33건 / Major 76건 / Minor 78건">
+                <div class="seg seg-blocker" style="width:0.0%;"></div>
+                <div class="seg seg-critical" style="width:17.65%;"></div>
+                <div class="seg seg-major" style="width:40.64%;"></div>
+                <div class="seg seg-minor" style="width:41.71%;"></div>
+              </div>
+
+              <div class="severity-detail">
+                <div><span class="dot blocker"></span>Blocker <b>0</b></div>
+                <div><span class="dot critical"></span>Critical <b>33</b></div>
+                <div><span class="dot major"></span>Major <b>76</b></div>
+                <div><span class="dot minor"></span>Minor <b>78</b></div>
+              </div>
+            </div>
+            
+            <div class="heat-card" style="min-height:332px;">
+              <div class="heat-card-header">
+                <div class="heat-card-title">정책 불일치</div>
+                <div class="heat-card-count">168건</div>
+              </div>
+
+              <div class="heat-card-sub">전체 대비 30.7%</div>
+
+              <div class="severity-stack" title="Blocker 1건 / Critical 9건 / Major 26건 / Minor 132건">
+                <div class="seg seg-blocker" style="width:0.6%;"></div>
+                <div class="seg seg-critical" style="width:5.36%;"></div>
+                <div class="seg seg-major" style="width:15.48%;"></div>
+                <div class="seg seg-minor" style="width:78.55999999999999%;"></div>
+              </div>
+
+              <div class="severity-detail">
+                <div><span class="dot blocker"></span>Blocker <b>1</b></div>
+                <div><span class="dot critical"></span>Critical <b>9</b></div>
+                <div><span class="dot major"></span>Major <b>26</b></div>
+                <div><span class="dot minor"></span>Minor <b>132</b></div>
+              </div>
+            </div>
+            
+            <div class="heat-card" style="min-height:326px;">
+              <div class="heat-card-header">
+                <div class="heat-card-title">UX/UI</div>
+                <div class="heat-card-count">161건</div>
+              </div>
+
+              <div class="heat-card-sub">전체 대비 29.4%</div>
+
+              <div class="severity-stack" title="Blocker 0건 / Critical 2건 / Major 7건 / Minor 152건">
+                <div class="seg seg-blocker" style="width:0.0%;"></div>
+                <div class="seg seg-critical" style="width:1.24%;"></div>
+                <div class="seg seg-major" style="width:4.35%;"></div>
+                <div class="seg seg-minor" style="width:94.41%;"></div>
+              </div>
+
+              <div class="severity-detail">
+                <div><span class="dot blocker"></span>Blocker <b>0</b></div>
+                <div><span class="dot critical"></span>Critical <b>2</b></div>
+                <div><span class="dot major"></span>Major <b>7</b></div>
+                <div><span class="dot minor"></span>Minor <b>152</b></div>
+              </div>
+            </div>
+            
+            <div class="heat-card" style="min-height:201px;">
+              <div class="heat-card-header">
+                <div class="heat-card-title">텍스트</div>
+                <div class="heat-card-count">24건</div>
+              </div>
+
+              <div class="heat-card-sub">전체 대비 4.4%</div>
+
+              <div class="severity-stack" title="Blocker 0건 / Critical 0건 / Major 0건 / Minor 24건">
+                <div class="seg seg-blocker" style="width:0.0%;"></div>
+                <div class="seg seg-critical" style="width:0.0%;"></div>
+                <div class="seg seg-major" style="width:0.0%;"></div>
+                <div class="seg seg-minor" style="width:100.0%;"></div>
+              </div>
+
+              <div class="severity-detail">
+                <div><span class="dot blocker"></span>Blocker <b>0</b></div>
+                <div><span class="dot critical"></span>Critical <b>0</b></div>
+                <div><span class="dot major"></span>Major <b>0</b></div>
+                <div><span class="dot minor"></span>Minor <b>24</b></div>
+              </div>
+            </div>
+            
+            <div class="heat-card" style="min-height:185px;">
+              <div class="heat-card-header">
+                <div class="heat-card-title">개선의견</div>
+                <div class="heat-card-count">6건</div>
+              </div>
+
+              <div class="heat-card-sub">전체 대비 1.1%</div>
+
+              <div class="severity-stack" title="Blocker 0건 / Critical 0건 / Major 0건 / Minor 6건">
+                <div class="seg seg-blocker" style="width:0.0%;"></div>
+                <div class="seg seg-critical" style="width:0.0%;"></div>
+                <div class="seg seg-major" style="width:0.0%;"></div>
+                <div class="seg seg-minor" style="width:100.0%;"></div>
+              </div>
+
+              <div class="severity-detail">
+                <div><span class="dot blocker"></span>Blocker <b>0</b></div>
+                <div><span class="dot critical"></span>Critical <b>0</b></div>
+                <div><span class="dot major"></span>Major <b>0</b></div>
+                <div><span class="dot minor"></span>Minor <b>6</b></div>
+              </div>
+            </div>
+            
+            <div class="heat-card" style="min-height:180px;">
+              <div class="heat-card-header">
+                <div class="heat-card-title">성능</div>
+                <div class="heat-card-count">1건</div>
+              </div>
+
+              <div class="heat-card-sub">전체 대비 0.2%</div>
+
+              <div class="severity-stack" title="Blocker 0건 / Critical 0건 / Major 0건 / Minor 1건">
+                <div class="seg seg-blocker" style="width:0.0%;"></div>
+                <div class="seg seg-critical" style="width:0.0%;"></div>
+                <div class="seg seg-major" style="width:0.0%;"></div>
+                <div class="seg seg-minor" style="width:100.0%;"></div>
+              </div>
+
+              <div class="severity-detail">
+                <div><span class="dot blocker"></span>Blocker <b>0</b></div>
+                <div><span class="dot critical"></span>Critical <b>0</b></div>
+                <div><span class="dot major"></span>Major <b>0</b></div>
+                <div><span class="dot minor"></span>Minor <b>1</b></div>
+              </div>
+            </div>
+            
+        </div>
+
+        <div class="legend">
+          <span class="legend-chip"><span class="legend-dot" style="background:#7c3aed;"></span>Blocker</span>
+          <span class="legend-chip"><span class="legend-dot" style="background:#ef4444;"></span>Critical</span>
+          <span class="legend-chip"><span class="legend-dot" style="background:#f59e0b;"></span>Major</span>
+          <span class="legend-chip"><span class="legend-dot" style="background:#3b82f6;"></span>Minor</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="panel-title">유형별 심각도 분포</div>
+        <table>
+          <thead>
+            <tr>
+              <th>결함 유형</th>
+              <th class="num">Blocker</th>
+              <th class="num">Critical</th>
+              <th class="num">Major</th>
+              <th class="num">Minor</th>
+              <th class="num">합계</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>기능</td><td class='num'>0</td><td class='num'>33</td><td class='num'>76</td><td class='num'>78</td><td class='num'>187</td></tr><tr><td>정책 불일치</td><td class='num'>1</td><td class='num'>9</td><td class='num'>26</td><td class='num'>132</td><td class='num'>168</td></tr><tr><td>UX/UI</td><td class='num'>0</td><td class='num'>2</td><td class='num'>7</td><td class='num'>152</td><td class='num'>161</td></tr><tr><td>텍스트</td><td class='num'>0</td><td class='num'>0</td><td class='num'>0</td><td class='num'>24</td><td class='num'>24</td></tr><tr><td>개선의견</td><td class='num'>0</td><td class='num'>0</td><td class='num'>0</td><td class='num'>6</td><td class='num'>6</td></tr><tr><td>성능</td><td class='num'>0</td><td class='num'>0</td><td class='num'>0</td><td class='num'>1</td><td class='num'>1</td></tr>
+          </tbody>
+        </table>
+
+        <div style="height:14px;"></div>
+
+        <div class="panel-title">심각도 분포</div>
+        <table>
+          <tbody>
+            <tr><td><span class='badge b-blocker'>Blocker</span></td><td class='num'>1건</td><td class='num'>0.2%</td></tr><tr><td><span class='badge b-critical'>Critical</span></td><td class='num'>44건</td><td class='num'>8.0%</td></tr><tr><td><span class='badge b-major'>Major</span></td><td class='num'>109건</td><td class='num'>19.9%</td></tr><tr><td><span class='badge b-minor'>Minor</span></td><td class='num'>393건</td><td class='num'>71.8%</td></tr>
+          </tbody>
+        </table>
+
+        <div style="height:14px;"></div>
+
+        <div class="panel-title">상태 상위 분포</div>
+        <table>
+          <tbody>
+            <tr><td>완료 (Done)</td><td class='num'>354건</td></tr><tr><td>등록 (Registered)</td><td class='num'>64건</td></tr><tr><td>QA 검증 - 회귀 (QA Verification)</td><td class='num'>28건</td></tr><tr><td>결함 아님 (Not an issue)</td><td class='num'>28건</td></tr><tr><td>배정 (Assigned)</td><td class='num'>18건</td></tr><tr><td>기획서 결함</td><td class='num'>14건</td></tr><tr><td>결함 재발생 (Reopen)</td><td class='num'>13건</td></tr><tr><td>추후 수정</td><td class='num'>10건</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="footnote">
+      각 박스는 결함 유형이며, 박스 내부 색상 바는 해당 유형 내 심각도 비율입니다.<br/>
+      즉, 박스 개별 크기/높이는 유형 건수 크기를 강조하고, 색상 바는 Blocker / Critical / Major / Minor 분포를 보여줍니다.
+    </div>
+  </div>
+</body>
+</html>

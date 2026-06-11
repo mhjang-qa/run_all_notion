@@ -1,0 +1,64 @@
+📂 시나리오 2개 추가
+🚀 전체 실행 시작
+🧩 실행 시나리오 수: 2
+📱 브라우저 설정: Chrome / 모바일 / 500x812
+▶ [1/2] 실행: /Users/jangminho/Desktop/gohanpass_automation/mobile-web-validator/scenarios/01_login.py
+✅ [1/2] 다음 시나리오 진행
+▶ [2/2] 실행: /Users/jangminho/Desktop/gohanpass_automation/mobile-web-validator/scenarios/97_auto_click_payment.py
+  - open_home: PASS
+  - open_payment_tab: PASS
+    · 결제탭 클릭 시도: 충전
+  - payment_menu_충전: PASS
+    · 결제탭 클릭 시도: 출금
+  - payment_menu_출금: PASS
+    · 결제탭 클릭 시도: 내역
+  - payment_menu_내역: PASS
+    · 결제탭 클릭 시도: 송금
+  - payment_menu_송금: PASS
+    · 결제탭 클릭 시도: 올리브영
+  - payment_menu_올리브영: PASS
+    · 결제탭 클릭 시도: GS25
+  - payment_menu_GS25: PASS
+    · 결제탭 클릭 시도: 다이소
+  - payment_menu_다이소: PASS
+    · 결제탭 클릭 시도: 설빙
+  - payment_menu_설빙: PASS
+    · 결제탭 클릭 시도: 공차
+  - payment_menu_공차: PASS
+    · 결제탭 클릭 시도: 아트박스
+  - payment_menu_아트박스: PASS
+    · 결제탭 클릭 시도: 모두 보기
+  - payment_menu_모두 보기: PASS
+    · 결제탭 클릭 시도: GO Hanpass Card
+  - payment_menu_GO Hanpass Card: PASS
+    · 결제탭 클릭 시도: 카드 신청
+  - payment_menu_카드 신청: PASS
+    · 결제탭 클릭 시도: K-Style PICK 전체보기
+  - payment_menu_K-Style PICK 전체보기: FAIL (K-Style PICK 전체보기 클릭 실패: None)
+✅ [2/2] 다음 시나리오 진행
+===== 전체 결과 =====
+📄 시나리오 결과: 01_login.py
+  - open_url: PASS
+  - title_check: PASS
+  - email_input: PASS
+  - password_input_click: PASS
+  - password_keypad_input: PASS
+  - confirm_click: PASS
+  - login_result_check: PASS
+📄 시나리오 결과: 97_auto_click_payment.py
+  - open_home: PASS
+  - open_payment_tab: PASS
+  - payment_menu_충전: PASS
+  - payment_menu_출금: PASS
+  - payment_menu_내역: PASS
+  - payment_menu_송금: PASS
+  - payment_menu_올리브영: PASS
+  - payment_menu_GS25: PASS
+  - payment_menu_다이소: PASS
+  - payment_menu_설빙: PASS
+  - payment_menu_공차: PASS
+  - payment_menu_아트박스: PASS
+  - payment_menu_모두 보기: PASS
+  - payment_menu_GO Hanpass Card: PASS
+  - payment_menu_카드 신청: PASS
+  - payment_menu_K-Style PICK 전체보기: FAIL

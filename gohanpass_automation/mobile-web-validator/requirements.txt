@@ -1,0 +1,4 @@
+playwright
+PySide6
+requests
+python-dotenv

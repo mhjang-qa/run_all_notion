@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="robots" content="noindex">
+  <title>Notion Weather Widget</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+      color: #0f172a;
+    }
+
+    .weather-card {
+      width: 320px;
+      padding: 32px;
+      border: 1px solid #d7d7d7;
+      border-radius: 12px;
+      background: #ffffff;
+    }
+
+    .location {
+      font-size: 12px;
+      color: #667085;
+      margin-bottom: 8px;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 34px;
+    }
+
+    .temperature {
+      font-size: 48px;
+      font-weight: 600;
+      letter-spacing: -3px;
+      line-height: 1;
+    }
+
+    .degree {
+      font-size: 20px;
+      vertical-align: top;
+      margin-left: 2px;
+    }
+
+    .main-icon {
+      width: 82px;
+      height: 64px;
+      color: #050b1a;
+    }
+
+    .summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #98a2b3;
+      font-size: 12px;
+      margin-bottom: 28px;
+    }
+
+    .rain {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .divider {
+      height: 1px;
+      background: #d9d9d9;
+      margin-bottom: 18px;
+    }
+
+    .forecast {
+      display: grid;
+      gap: 14px;
+      font-size: 13px;
+      color: #8a93a3;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 32px 42px 42px;
+      align-items: center;
+    }
+
+    .day, .low, .high {
+      color: #8a93a3;
+    }
+
+    .low, .high {
+      text-align: right;
+    }
+
+    .mini-icon {
+      width: 16px;
+      height: 16px;
+      color: #98a2b3;
+    }
+
+    .loading, .error {
+      font-size: 13px;
+      color: #98a2b3;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <main class="weather-card">
+    <div class="location" id="location">서울</div>
+
+    <section class="top">
+      <div class="temperature"><span id="temperature">--</span><span class="degree">°</span></div>
+      <div id="mainIcon" class="main-icon"></div>
+    </section>
+
+    <section class="summary">
+      <span id="condition">날씨 정보를 불러오는 중</span>
+      <span class="rain">☔ <span id="rainPercent">--</span>%</span>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="forecast" id="forecast">
+      <div class="loading">실시간 데이터를 가져오고 있습니다.</div>
+    </section>
+  </main>
+
+  <script>
+    // ==============================
+    // 노션용 실시간 날씨 위젯
+    // 데이터: Open-Meteo API
+    // 기본 위치: 서울
+    // ==============================
+
+    const CONFIG = {
+      cityName: "서울",
+      latitude: 37.5665,
+      longitude: 126.9780,
+      timezone: "Asia/Seoul"
+    };
+
+    const weatherText = {
+      0: "맑음",
+      1: "대체로 맑음",
+      2: "부분적으로 흐림",
+      3: "흐림",
+      45: "안개",
+      48: "서리 안개",
+      51: "약한 이슬비",
+      53: "이슬비",
+      55: "강한 이슬비",
+      61: "약한 비",
+      63: "비",
+      65: "강한 비",
+      71: "약한 눈",
+      73: "눈",
+      75: "강한 눈",
+      80: "약한 소나기",
+      81: "소나기",
+      82: "강한 소나기",
+      95: "뇌우",
+      96: "우박 동반 뇌우",
+      99: "강한 우박 동반 뇌우"
+    };
+
+    const dayNames = ["일", "월", "화", "수", "목", "금", "토"];
+
+    function getClothingText(temp, code) {
+      const isRain = [51, 53, 55, 61, 63, 65, 80, 81, 82, 95, 96, 99].includes(code);
+      if (isRain) return "우산 · 방수 자켓";
+      if (temp >= 28) return "반팔 · 얇은 옷";
+      if (temp >= 23) return "반팔 · 셔츠";
+      if (temp >= 17) return "긴팔 · 카디건";
+      if (temp >= 10) return "니트 · 가벼운 외투";
+      if (temp >= 5) return "코트 · 목도리";
+      return "패딩 · 장갑";
+    }
+
+    function getWeatherIcon(code, large = false) {
+      const strokeWidth = large ? 6 : 2;
+      const common = `fill="none" stroke="currentColor" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round"`;
+
+      if ([0, 1].includes(code)) {
+        return `<svg viewBox="0 0 64 64" class="${large ? "main-icon" : "mini-icon"}">
+          <circle cx="32" cy="32" r="12" ${common}/>
+          <path d="M32 5v8M32 51v8M5 32h8M51 32h8M13 13l6 6M45 45l6 6M51 13l-6 6M19 45l-6 6" ${common}/>
+        </svg>`;
+      }
+
+      if ([2, 3, 45, 48].includes(code)) {
+        return `<svg viewBox="0 0 96 72" class="${large ? "main-icon" : "mini-icon"}">
+          <path d="M28 58H68C81 58 90 49 90 38C90 27 81 20 70 20C66 9 56 4 45 5C31 6 21 17 21 31C11 32 4 40 4 50C4 56 9 58 28 58Z" ${common}/>
+        </svg>`;
+      }
+
+      if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) {
+        return `<svg viewBox="0 0 64 64" class="${large ? "main-icon" : "mini-icon"}">
+          <path d="M20 34H44C53 34 58 28 58 21C58 14 52 9 45 9C42 4 36 2 30 3C22 4 16 10 16 18C10 19 6 24 6 30C6 34 10 34 20 34Z" ${common}/>
+          <path d="M22 44l-3 7M34 44l-3 7M46 44l-3 7" ${common}/>
+        </svg>`;
+      }
+
+      return `<svg viewBox="0 0 64 64" class="${large ? "main-icon" : "mini-icon"}">
+        <path d="M18 34H46C55 34 60 28 60 21C60 14 54 9 47 9C44 4 38 2 32 3C24 4 18 10 18 18C12 19 8 24 8 30C8 34 12 34 18 34Z" ${common}/>
+        <path d="M30 42l-6 10h8l-4 8 12-14h-8l4-4" ${common}/>
+      </svg>`;
+    }
+
+    async function loadWeather() {
+      const url = new URL("https://api.open-meteo.com/v1/forecast");
+      url.search = new URLSearchParams({
+        latitude: CONFIG.latitude,
+        longitude: CONFIG.longitude,
+        current: "temperature_2m,weather_code,precipitation_probability",
+        daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
+        timezone: CONFIG.timezone,
+        forecast_days: 6
+      });
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("날씨 API 호출 실패");
+
+        const data = await response.json();
+        renderCurrent(data.current);
+        renderForecast(data.daily);
+      } catch (error) {
+        document.getElementById("forecast").innerHTML = `<div class="error">날씨 정보를 불러오지 못했습니다.<br />잠시 후 다시 시도해 주세요.</div>`;
+        document.getElementById("condition").textContent = "데이터 로딩 실패";
+      }
+    }
+
+    function renderCurrent(current) {
+      const temp = Math.round(current.temperature_2m);
+      const code = current.weather_code;
+      const rain = current.precipitation_probability ?? 0;
+
+      document.getElementById("location").textContent = CONFIG.cityName;
+      document.getElementById("temperature").textContent = temp;
+      document.getElementById("mainIcon").innerHTML = getWeatherIcon(code, true);
+      document.getElementById("condition").textContent = `${weatherText[code] || "날씨"} · ${getClothingText(temp, code)}`;
+      document.getElementById("rainPercent").textContent = rain;
+    }
+
+    function renderForecast(daily) {
+      const forecast = document.getElementById("forecast");
+      forecast.innerHTML = "";
+
+      daily.time.forEach((dateText, index) => {
+        const date = new Date(dateText);
+        const dayLabel = index === 0 ? "오늘" : dayNames[date.getDay()];
+        const code = daily.weather_code[index];
+        const min = Math.round(daily.temperature_2m_min[index]);
+        const max = Math.round(daily.temperature_2m_max[index]);
+
+        forecast.innerHTML += `
+          <div class="row">
+            <span class="day">${dayLabel}</span>
+            <span>${getWeatherIcon(code)}</span>
+            <span class="low">${min}°</span>
+            <span class="high">${max}°</span>
+          </div>
+        `;
+      });
+    }
+
+    loadWeather();
+  </script>
+</body>
+</html>

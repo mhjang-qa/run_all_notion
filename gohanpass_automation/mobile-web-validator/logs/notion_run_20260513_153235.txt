@@ -1,0 +1,287 @@
+📂 시나리오 2개 추가
+🚀 전체 실행 시작
+🧩 실행 시나리오 수: 2
+📱 브라우저 설정: Chrome / 모바일 / 500x812
+▶ [1/2] 실행: /Users/jangminho/Desktop/gohanpass_automation/mobile-web-validator/scenarios/01_login.py
+✅ [1/2] 다음 시나리오 진행
+▶ [2/2] 실행: /Users/jangminho/Desktop/gohanpass_automation/mobile-web-validator/scenarios/97_auto_click_payment.py
+  - open_home: PASS
+  - open_payment_tab: PASS
+    · 결제탭 클릭 시도: 충전
+  - payment_menu_충전: PASS
+    · 결제탭 클릭 시도: 출금
+  - payment_menu_출금: PASS
+    · 결제탭 클릭 시도: 내역
+  - payment_menu_내역: PASS
+    · 결제탭 클릭 시도: 송금
+  - payment_menu_송금: PASS
+    · 결제탭 클릭 시도: 올리브영
+  - payment_menu_올리브영: PASS
+    · 결제탭 클릭 시도: GS25
+  - payment_menu_GS25: PASS
+    · 결제탭 클릭 시도: 다이소
+  - payment_menu_다이소: PASS
+    · 결제탭 클릭 시도: 설빙
+  - payment_menu_설빙: PASS
+    · 결제탭 클릭 시도: 공차
+  - payment_menu_공차: PASS
+    · 결제탭 클릭 시도: 아트박스
+  - payment_menu_아트박스: PASS
+    · 결제탭 클릭 시도: 모두 보기
+  - payment_menu_모두 보기: PASS
+    · 결제탭 클릭 시도: GO Hanpass Card
+  - payment_menu_GO Hanpass Card: PASS
+    · 결제탭 클릭 시도: 카드 신청
+  - payment_menu_카드 신청: PASS
+    · 결제탭 클릭 시도: K-Style PICK 전체보기
+  - payment_menu_K-Style PICK 전체보기: FAIL (K-Style PICK 전체보기 클릭 실패: None)
+✅ [2/2] 다음 시나리오 진행
+===== 전체 결과 =====
+📄 시나리오 결과: 01_login.py
+  - open_url: PASS
+  - title_check: PASS
+  - email_input: PASS
+  - password_input_click: PASS
+  - password_keypad_input: PASS
+  - confirm_click: PASS
+  - login_result_check: PASS
+📄 시나리오 결과: 97_auto_click_payment.py
+  - open_home: PASS
+  - open_payment_tab: PASS
+  - payment_menu_충전: PASS
+  - payment_menu_출금: PASS
+  - payment_menu_내역: PASS
+  - payment_menu_송금: PASS
+  - payment_menu_올리브영: PASS
+  - payment_menu_GS25: PASS
+  - payment_menu_다이소: PASS
+  - payment_menu_설빙: PASS
+  - payment_menu_공차: PASS
+  - payment_menu_아트박스: PASS
+  - payment_menu_모두 보기: PASS
+  - payment_menu_GO Hanpass Card: PASS
+  - payment_menu_카드 신청: PASS
+  - payment_menu_K-Style PICK 전체보기: FAIL
+📝 Notion 등록 준비 완료
+📎 Notion 첨부 준비: 2개
+✅ 종료
+📝 Notion 등록 시작
+✅ Notion 등록 완료
+📝 Notion 등록 시작
+✅ Notion 등록 완료
+🧹 시나리오 목록 초기화
+🧹 시나리오 목록 초기화
+📂 시나리오 1개 추가
+🚀 전체 실행 시작
+🧩 실행 시나리오 수: 1
+📱 브라우저 설정: Chrome / 모바일 / 500x812
+▶ [1/1] 실행: /Users/jangminho/Desktop/gohanpass_automation/mobile-web-validator/scenarios/96_full_menu_audit.py
+  - ensure_login: PASS
+  - open_go_hanpass_home: PASS
+전체 메뉴 수집 완료: 37개
+    [01] 서울
+    [02] 25.1℃
+    [03] 메뉴
+    [04] menu_item_4
+    [05] 공항에서 받는 카드 신청! 캐시백 0.3% + 교통 신청
+    [06] 내 위치
+    [07] 명동역 2번 출구
+    [08] 검색
+    [09] N서울타워
+    [10] 경복궁
+    [11] 여의도한강공원
+    [12] 롯데월드타워
+    [13] 홍대거리
+    [14] 교통카드 충전
+    [15] 택시
+    [16] 버스
+    [17] KTX
+    [18] 약국 내 주변 약국 찾기
+    [19] 맛집 인기 TOP 10!
+    [20] 홈
+    [21] 여행
+    [22] 결제
+    [23] my_page
+    [24] Go back
+    [25] 고객센터
+    [26] 설정
+    [27] 길찾기
+    [28] 교통카드 충전
+    [29] 택시 호출하기
+    [30] KTX 예약
+    [31] 버스 예약
+    [32] 충전하기
+    [33] 월렛 내역 조회
+    [34] 내역관리
+    [35] 해외송금 보내기
+    [36] ATM 출금
+    [37] 여행 컨텐츠 더보기
+▶ 전체 메뉴 확인 시작: 서울
+    ↳ 실패: 전체 메뉴 버튼을 찾지 못했습니다: Locator.click: Timeout 4000ms exceeded.
+Call log:
+  - waiting for locator("button[aria-label*=\"메뉴\"]").first
+    - locator resolved to <button type="button" aria-label="메뉴">…</button>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <img alt="설정" class="w-6 h-6" src="https://d1i57cju2iebv0.cloudfront.net/common/icons/icon24_header_setting.svg"/> from <div id="_r_3_" data-floating-ui-portal="">…</div> subtree intercepts pointer events
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <img alt="설정" class="w-6 h-6" src="https://d1i57cju2iebv0.cloudfront.net/common/icons/icon24_header_setting.svg"/> from <div id="_r_3_" data-floating-ui-portal="">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 100ms
+    7 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <img alt="설정" class="w-6 h-6" src="https://d1i57cju2iebv0.cloudfront.net/common/icons/icon24_header_setting.svg"/> from <div id="_r_3_" data-floating-ui-portal="">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 500ms
+
+▶ 전체 메뉴 확인 시작: 25.1℃
+    ↳ 화면 내용 변경
+▶ 전체 메뉴 확인 시작: 메뉴
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: menu_item_4
+    ↳ URL 변경: https://go.hanpass.com/mob/search?type=arrival
+▶ 전체 메뉴 확인 시작: 공항에서 받는 카드 신청! 캐시백 0.3% + 교통 신청
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 내 위치
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 명동역 2번 출구
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 검색
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: N서울타워
+    ↳ 화면 내용 변경
+▶ 전체 메뉴 확인 시작: 경복궁
+    ↳ 화면 내용 변경
+▶ 전체 메뉴 확인 시작: 여의도한강공원
+    ↳ 화면 내용 변경
+▶ 전체 메뉴 확인 시작: 롯데월드타워
+    ↳ 화면 내용 변경
+▶ 전체 메뉴 확인 시작: 홍대거리
+    ↳ 화면 내용 변경
+▶ 전체 메뉴 확인 시작: 교통카드 충전
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 택시
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 버스
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: KTX
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 약국 내 주변 약국 찾기
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 맛집 인기 TOP 10!
+    ↳ 화면 내용 변경
+▶ 전체 메뉴 확인 시작: 홈
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 여행
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 결제
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: my_page
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: Go back
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 고객센터
+    ↳ URL 변경: https://go.hanpass.com/support/support_001
+▶ 전체 메뉴 확인 시작: 설정
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 길찾기
+    ↳ URL 변경: https://go.hanpass.com/mob/search?type=arrival
+▶ 전체 메뉴 확인 시작: 교통카드 충전
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 택시 호출하기
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: KTX 예약
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 버스 예약
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 충전하기
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 월렛 내역 조회
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 내역관리
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 해외송금 보내기
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: ATM 출금
+    ↳ 클릭 가능 여부 확인
+▶ 전체 메뉴 확인 시작: 여행 컨텐츠 더보기
+    ↳ 클릭 가능 여부 확인
+✅ [1/1] 다음 시나리오 진행
+===== 전체 결과 =====
+📄 시나리오 결과: 96_full_menu_audit.py
+  - ensure_login: PASS
+  - open_go_hanpass_home: PASS
+  - collect_full_menu_items: PASS (37개)
+  - menu_01_서울: FAIL (전체 메뉴 버튼을 찾지 못했습니다: Locator.click: Timeout 4000ms exceeded.
+Call log:
+  - waiting for locator("button[aria-label*=\"메뉴\"]").first
+    - locator resolved to <button type="button" aria-label="메뉴">…</button>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <img alt="설정" class="w-6 h-6" src="https://d1i57cju2iebv0.cloudfront.net/common/icons/icon24_header_setting.svg"/> from <div id="_r_3_" data-floating-ui-portal="">…</div> subtree intercepts pointer events
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <img alt="설정" class="w-6 h-6" src="https://d1i57cju2iebv0.cloudfront.net/common/icons/icon24_header_setting.svg"/> from <div id="_r_3_" data-floating-ui-portal="">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 100ms
+    7 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <img alt="설정" class="w-6 h-6" src="https://d1i57cju2iebv0.cloudfront.net/common/icons/icon24_header_setting.svg"/> from <div id="_r_3_" data-floating-ui-portal="">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 500ms
+)
+  - menu_02_25_1: PASS
+  - menu_03_메뉴: PASS
+  - menu_04_menu_item_4: PASS
+  - menu_05_공항에서_받는_카드_신청_캐시백_0_3_교통_신청: PASS
+  - menu_06_내_위치: PASS
+  - menu_07_명동역_2번_출구: PASS
+  - menu_08_검색: PASS
+  - menu_09_N서울타워: PASS
+  - menu_10_경복궁: PASS
+  - menu_11_여의도한강공원: PASS
+  - menu_12_롯데월드타워: PASS
+  - menu_13_홍대거리: PASS
+  - menu_14_교통카드_충전: PASS
+  - menu_15_택시: PASS
+  - menu_16_버스: PASS
+  - menu_17_KTX: PASS
+  - menu_18_약국_내_주변_약국_찾기: PASS
+  - menu_19_맛집_인기_TOP_10: PASS
+  - menu_20_홈: PASS
+  - menu_21_여행: PASS
+  - menu_22_결제: PASS
+  - menu_23_my_page: PASS
+  - menu_24_Go_back: PASS
+  - menu_25_고객센터: PASS
+  - menu_26_설정: PASS
+  - menu_27_길찾기: PASS
+  - menu_28_교통카드_충전: PASS
+  - menu_29_택시_호출하기: PASS
+  - menu_30_KTX_예약: PASS
+  - menu_31_버스_예약: PASS
+  - menu_32_충전하기: PASS
+  - menu_33_월렛_내역_조회: PASS
+  - menu_34_내역관리: PASS
+  - menu_35_해외송금_보내기: PASS
+  - menu_36_ATM_출금: PASS
+  - menu_37_여행_컨텐츠_더보기: PASS
