@@ -16,6 +16,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          persist-credentials: false
           submodules: recursive
 
       - name: Set up Python
@@ -34,6 +35,17 @@ jobs:
           git config --global user.name "run_all_notion bot"
           git config --global user.email "run-all-notion@users.noreply.github.com"
           git config --global url."https://x-access-token:${PUBLISH_GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+          git config --local --unset-all http.https://github.com/.extraheader || true
+          git submodule foreach --recursive 'git config --local --unset-all http.https://github.com/.extraheader || true'
+
+      - name: Refresh dashboard repos to latest main
+        run: |
+          git submodule sync --recursive
+          git submodule update --init --recursive
+          git -C Bug_Dashboard fetch origin main
+          git -C Bug_Dashboard checkout -B main origin/main
+          git -C HQI fetch origin main
+          git -C HQI checkout -B main origin/main
 
       - name: Run unified sync
         run: python3 run_all_notion.py

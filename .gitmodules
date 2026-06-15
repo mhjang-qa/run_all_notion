@@ -1,6 +1,8 @@
 [submodule "Bug_Dashboard"]
 	path = Bug_Dashboard
 	url = https://github.com/mhjang-qa/Bug_Dashboard.git
+	branch = main
 [submodule "HQI"]
 	path = HQI
 	url = https://github.com/mhjang-qa/HQI.git
+	branch = main
