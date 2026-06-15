@@ -13,9 +13,19 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-DATABASE_ID = "21473fbd1951800d8321fc2e34c2548e"
+_HARDCODED_DATABASE_ID = "21473fbd1951800d8321fc2e34c2548e"
 NOTION_VERSION = "2022-06-28"
+
+
+def get_database_id() -> str:
+    """환경변수 우선, 없으면 하드코딩 값 사용 (generate_defect_dashboard.py와 동일한 방식)"""
+    for name in ("NOTION_DEFECT_DB_ID", "DEFECT_NOTION_DB_ID", "NOTION_QA_DEFECT_DB_ID", "NOTION_DATABASE_ID"):
+        value = os.environ.get(name, "").strip()
+        if value:
+            return value
+    return _HARDCODED_DATABASE_ID
 OUT_FILE = "qa_heatmap_embed.html"
+GO_HANPASS_KEYWORDS = ("go hanpass", "gohanpass", "go.hanpass", "[g.h]", "g.h", "방한홈", "고한패스")
 REPO_URL = "https://github.com/mhjang-qa/qa_hitmap.git"
 PUBLISH_DIR = Path(".publish/qa_hitmap")
 PUBLISH_BRANCH = "main"
@@ -88,25 +98,62 @@ def prop_name(page, name):
     return ""
 
 
+def has_go_hanpass_keyword(value):
+    text = (value or "").strip().lower()
+    return any(keyword in text for keyword in GO_HANPASS_KEYWORDS)
+
+
+def extract_semver(value):
+    match = re.search(r"(?<!\d)(\d+)\.(\d+)(?:\.(\d+))?(?!\d)", value or "")
+    if not match:
+        return None
+    return tuple(int(part or 0) for part in match.groups())
+
+
+def extract_year_month_suffix(value):
+    match = re.search(r"(?<!\d)(\d{2})\.(\d{2})(?!\d)", value or "")
+    if not match:
+        return None
+    return int(match.group(1)), int(match.group(2))
+
+
+def normalize_target_version(target_version):
+    value = (target_version or "").strip()
+    if not value:
+        return "미지정"
+    if has_go_hanpass_keyword(value):
+        version = extract_semver(value)
+        suffix = extract_year_month_suffix(value)
+        if version:
+            label = f"[G.H]v{version[0]}.{version[1]}.{version[2]}"
+            if suffix:
+                label += f"-{suffix[0]:02d}.{suffix[1]:02d}"
+            return label
+        body = re.sub(
+            r"^(?:\[?\s*g\.?\s*h\.?\s*\]?|go\.?\s*hanpass|gohanpass|방한홈|고한패스)\s*",
+            "",
+            value,
+            flags=re.I,
+        ).strip()
+        body = body.lstrip(" :-_")
+        return f"[G.H]{body}" if body else "[G.H]"
+    version = extract_semver(value)
+    if version:
+        return f"{version[0]}.{version[1]}.{version[2]}"
+    return value
+
+
 def classify_domain(target_version):
     value = (target_version or "").strip()
-    compact = re.sub(r"\s+", "", value).upper()
-
-    if re.match(r"^\[G\.?H\]V?\d+\.\d+\.\d+$", compact):
+    if has_go_hanpass_keyword(value):
         return "방한 고한패스"
-    if compact in {"GO.HANPASS", "GOHANPASS"}:
-        return "방한 고한패스"
-    if re.match(r"^\d+\.\d+\.\d+$", compact):
+    if extract_semver(value):
         return "한패스"
     return "미분류"
 
 
 def version_tuple(target_version):
-    compact = re.sub(r"\s+", "", target_version or "")
-    match = re.match(r"^(\d+)\.(\d+)\.(\d+)$", compact)
-    if not match:
-        return None
-    return tuple(int(part) for part in match.groups())
+    return extract_semver(target_version)
 
 
 def is_tracked_version(target_version):
@@ -148,7 +195,7 @@ def fetch_pages():
     payload = {"page_size": 100}
 
     while True:
-        response = notion_request(f"/databases/{DATABASE_ID}/query", payload)
+        response = notion_request(f"/databases/{get_database_id()}/query", payload)
         pages.extend(response.get("results", []))
         if not response.get("has_more"):
             return pages
@@ -157,6 +204,7 @@ def fetch_pages():
 
 def normalize_pages(pages):
     rows = []
+    skipped_untracked = []
     for page in pages:
         title = prop_name(page, "결함 요약")
         target_version = prop_name(page, "목표버전")
@@ -167,7 +215,9 @@ def normalize_pages(pages):
         issue_id = prop_name(page, "ID")
         created_at = prop_name(page, "생성 일시")
 
-        if not is_tracked_version(target_version):
+        normalized_version = normalize_target_version(target_version)
+        if not is_tracked_version(normalized_version):
+            skipped_untracked.append(f"  버전={repr(target_version)} → 정규화={repr(normalized_version)}")
             continue
 
         rows.append(
@@ -176,8 +226,9 @@ def normalize_pages(pages):
                 "title": title,
                 "area": extract_area(title, defect_type),
                 "defectType": defect_type,
-                "targetVersion": target_version or "미지정",
-                "domain": classify_domain(target_version),
+                "targetVersion": normalized_version,
+                "targetVersionRaw": target_version or "미지정",
+                "domain": classify_domain(normalized_version),
                 "severity": severity,
                 "status": status,
                 "priority": priority,
@@ -185,6 +236,17 @@ def normalize_pages(pages):
                 "url": page.get("url", ""),
             }
         )
+
+    # 디버그: 필터링 현황 출력
+    print(f"[heatmap] 전체 {len(pages)}건 중 {len(rows)}건 포함, {len(skipped_untracked)}건 버전 필터 제외", flush=True)
+    if skipped_untracked:
+        sample = skipped_untracked[:10]
+        print(f"[heatmap] 제외된 버전 샘플 (최대 10건):", flush=True)
+        for line in sample:
+            print(line, flush=True)
+        if len(skipped_untracked) > 10:
+            print(f"  ... 외 {len(skipped_untracked) - 10}건", flush=True)
+
     return rows
 
 
@@ -1367,9 +1429,9 @@ def build_html(rows):
     function versionSortKey(version) {{
       const normalized = String(version || "").replace(/\\s+/g, "");
       const plain = normalized.match(/^(\\d+)\\.(\\d+)\\.(\\d+)$/);
-      if (plain) return [0, Number(plain[1]), Number(plain[2]), Number(plain[3])];
-      const gh = normalized.toUpperCase().match(/^\\[G\\.?H\\]V?(\\d+)\\.(\\d+)\\.(\\d+)$/);
-      if (gh) return [1, Number(gh[1]), Number(gh[2]), Number(gh[3])];
+      if (plain) return [0, Number(plain[1]), Number(plain[2]), Number(plain[3]), 0, 0];
+      const gh = normalized.toUpperCase().match(/^\\[G\\.?H\\]V?(\\d+)\\.(\\d+)\\.(\\d+)(?:[-_](\\d{{2}})\\.(\\d{{2}}))?$/);
+      if (gh) return [1, Number(gh[1]), Number(gh[2]), Number(gh[3]), Number(gh[4] || 0), Number(gh[5] || 0)];
       return [2, normalized];
     }}
 
