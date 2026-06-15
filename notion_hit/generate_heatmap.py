@@ -15,6 +15,7 @@ from pathlib import Path
 
 _HARDCODED_DATABASE_ID = "21473fbd1951800d8321fc2e34c2548e"
 NOTION_VERSION = "2022-06-28"
+SCRIPT_DIR = Path(__file__).resolve().parent
 
 
 def get_database_id() -> str:
@@ -24,12 +25,12 @@ def get_database_id() -> str:
         if value:
             return value
     return _HARDCODED_DATABASE_ID
-OUT_FILE = "qa_heatmap_embed.html"
+OUT_FILE_NAME = "qa_heatmap_embed.html"
+OUT_FILE = SCRIPT_DIR / OUT_FILE_NAME
 GO_HANPASS_KEYWORDS = ("go hanpass", "gohanpass", "go.hanpass", "[g.h]", "g.h", "방한홈", "고한패스")
 REPO_URL = "https://github.com/mhjang-qa/qa_hitmap.git"
-PUBLISH_DIR = Path(".publish/qa_hitmap")
+PUBLISH_DIR = SCRIPT_DIR / ".publish" / "qa_hitmap"
 PUBLISH_BRANCH = "main"
-SCRIPT_DIR = Path(__file__).resolve().parent
 
 
 def load_env_file():
@@ -85,8 +86,8 @@ def prop_name(page, name):
 
     if value_type in ("select", "status"):
         return value["name"] if value else ""
-    if value_type == "title":
-        return "".join(part.get("plain_text", "") for part in value)
+    if value_type in ("title", "rich_text"):
+        return "".join(part.get("plain_text", "") for part in value or [])
     if value_type == "unique_id":
         prefix = value.get("prefix") or ""
         number = value.get("number")
@@ -95,6 +96,20 @@ def prop_name(page, name):
         return value or ""
     if value_type == "date":
         return value.get("start", "") if value else ""
+    return ""
+
+
+def first_prop_name(page, names):
+    properties = page.get("properties", {})
+    for name in names:
+        value = prop_name(page, name).strip()
+        if value:
+            return value
+    for prop in properties.values():
+        if prop.get("type") == "title":
+            value = "".join(part.get("plain_text", "") for part in prop.get("title", [])).strip()
+            if value:
+                return value
     return ""
 
 
@@ -206,7 +221,7 @@ def normalize_pages(pages):
     rows = []
     skipped_untracked = []
     for page in pages:
-        title = prop_name(page, "결함 요약")
+        title = first_prop_name(page, ("결함 제목", "결함 요약", "제목", "Name", "title"))
         target_version = prop_name(page, "목표버전")
         severity = prop_name(page, "심각도") or "미지정"
         status = prop_name(page, "상태") or "미지정"
@@ -1780,12 +1795,12 @@ def ensure_publish_repo():
 
 
 def publish_html():
-    source = Path(OUT_FILE)
+    source = OUT_FILE
     if not source.exists():
         raise RuntimeError(f"{OUT_FILE} does not exist.")
 
     ensure_publish_repo()
-    shutil.copyfile(source, PUBLISH_DIR / OUT_FILE)
+    shutil.copyfile(source, PUBLISH_DIR / OUT_FILE_NAME)
 
     for extra_file in ("index.html", "README.md", ".nojekyll"):
         path = PUBLISH_DIR / extra_file
@@ -1801,7 +1816,7 @@ def publish_html():
     timestamp = datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M:%S")
     run_git(["commit", "-m", f"Update QA heatmap {timestamp}"], cwd=PUBLISH_DIR)
     run_git(["push", "-u", "origin", PUBLISH_BRANCH], cwd=PUBLISH_DIR)
-    print(f"Published {OUT_FILE} to {REPO_URL}")
+    print(f"Published {OUT_FILE_NAME} to {REPO_URL}")
 
 
 def parse_args():
@@ -1831,7 +1846,7 @@ def main():
     html = build_html(rows)
     with open(OUT_FILE, "w", encoding="utf-8") as file:
         file.write(html)
-    print(f"Generated {OUT_FILE} with {len(rows)} Notion rows.")
+    print(f"Generated {OUT_FILE_NAME} with {len(rows)} Notion rows.")
     if args.publish:
         publish_html()
 
