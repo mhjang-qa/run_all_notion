@@ -121,7 +121,20 @@ def commit_and_push(repo_dir: Path, message: str, branch: str = DEFAULT_BRANCH) 
         log(f"no git changes: {repo_dir}")
         return False
     run_git(["commit", "-m", message], cwd=repo_dir)
-    run_git(["push", "-u", "origin", branch], cwd=repo_dir)
+    push_result = run_git(["push", "-u", "origin", branch], cwd=repo_dir, check=False)
+    if push_result.returncode == 0:
+        return True
+
+    log(f"push failed, retry after rebase: {repo_dir}")
+    run_git(["fetch", "origin"], cwd=repo_dir, check=False)
+    rebase_result = run_git(["rebase", f"origin/{branch}"], cwd=repo_dir, check=False)
+    if rebase_result.returncode != 0:
+        run_git(["rebase", "--abort"], cwd=repo_dir, check=False)
+        raise StepError(f"command failed ({rebase_result.returncode}): git rebase origin/{branch}")
+
+    retry_push = run_git(["push", "-u", "origin", branch], cwd=repo_dir, check=False)
+    if retry_push.returncode != 0:
+        raise StepError(f"command failed ({retry_push.returncode}): git push -u origin {branch}")
     return True
 
 
