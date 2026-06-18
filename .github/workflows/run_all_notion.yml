@@ -2,6 +2,11 @@ name: run_all_notion
 
 on:
   workflow_dispatch:
+  schedule:
+    # GitHub Actions cron uses UTC.
+    # 08:30 KST = 23:30 UTC (previous day)
+    # 17:30 KST = 08:30 UTC
+    - cron: "30 23,8 * * *"
 
 jobs:
   sync:
