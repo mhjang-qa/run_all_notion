@@ -1815,7 +1815,17 @@ def publish_html():
 
     timestamp = datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M:%S")
     run_git(["commit", "-m", f"Update QA heatmap {timestamp}"], cwd=PUBLISH_DIR)
-    run_git(["push", "-u", "origin", PUBLISH_BRANCH], cwd=PUBLISH_DIR)
+    push_result = run_git(["push", "-u", "origin", PUBLISH_BRANCH], cwd=PUBLISH_DIR, check=False)
+    if push_result.returncode != 0:
+        print(f"[heatmap] push failed, retry after rebase: {PUBLISH_DIR}", flush=True)
+        run_git(["fetch", "origin"], cwd=PUBLISH_DIR, check=False)
+        rebase_result = run_git(["rebase", f"origin/{PUBLISH_BRANCH}"], cwd=PUBLISH_DIR, check=False)
+        if rebase_result.returncode != 0:
+            run_git(["rebase", "--abort"], cwd=PUBLISH_DIR, check=False)
+            raise RuntimeError(f"git rebase origin/{PUBLISH_BRANCH} failed: {rebase_result.stderr.strip() or rebase_result.stdout.strip()}")
+        retry_push = run_git(["push", "-u", "origin", PUBLISH_BRANCH], cwd=PUBLISH_DIR, check=False)
+        if retry_push.returncode != 0:
+            raise RuntimeError(f"git push -u origin {PUBLISH_BRANCH} failed: {retry_push.stderr.strip() or retry_push.stdout.strip()}")
     print(f"Published {OUT_FILE_NAME} to {REPO_URL}")
 
 
