@@ -45,12 +45,10 @@ jobs:
 
       - name: Refresh dashboard repos to latest main
         run: |
-          git submodule sync -- Bug_Dashboard HQI
-          git submodule update --init -- Bug_Dashboard HQI
+          git submodule sync -- Bug_Dashboard
+          git submodule update --init -- Bug_Dashboard
           git -C Bug_Dashboard fetch origin main
           git -C Bug_Dashboard checkout -B main origin/main
-          git -C HQI fetch origin main
-          git -C HQI checkout -B main origin/main
 
       - name: Run unified sync
         run: python3 run_all_notion.py
