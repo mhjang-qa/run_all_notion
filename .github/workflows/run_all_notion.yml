@@ -45,8 +45,8 @@ jobs:
 
       - name: Refresh dashboard repos to latest main
         run: |
-          git submodule sync --recursive
-          git submodule update --init --recursive
+          git submodule sync -- Bug_Dashboard HQI
+          git submodule update --init -- Bug_Dashboard HQI
           git -C Bug_Dashboard fetch origin main
           git -C Bug_Dashboard checkout -B main origin/main
           git -C HQI fetch origin main
