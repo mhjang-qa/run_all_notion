@@ -118,6 +118,15 @@ def has_go_hanpass_keyword(value):
     return any(keyword in text for keyword in GO_HANPASS_KEYWORDS)
 
 
+def is_hanpass_feature_label(value):
+    text = (value or "").strip()
+    if not text or text == "미지정":
+        return False
+    if has_go_hanpass_keyword(text) or extract_semver(text):
+        return False
+    return bool(re.match(r"^\[[^\]]+\]\s*\S+", text))
+
+
 def extract_semver(value):
     match = re.search(r"(?<!\d)(\d+)\.(\d+)(?:\.(\d+))?(?!\d)", value or "")
     if not match:
@@ -162,7 +171,7 @@ def classify_domain(target_version):
     value = (target_version or "").strip()
     if has_go_hanpass_keyword(value):
         return "방한 고한패스"
-    if extract_semver(value):
+    if extract_semver(value) or is_hanpass_feature_label(value):
         return "한패스"
     return "미분류"
 
@@ -179,6 +188,8 @@ def is_tracked_version(target_version):
         return False
 
     version = version_tuple(target_version)
+    if version is None and is_hanpass_feature_label(target_version):
+        return True
     return version is not None and version >= (5, 18, 0)
 
 
